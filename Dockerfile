@@ -7,6 +7,7 @@ ARG ly2video="false"
 
 RUN apt-get update && apt-get install -y \
   bzip2 \
+  wget \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /install
@@ -18,7 +19,12 @@ RUN "./lilypond-${lilypond_version}-1.linux-64.sh" --batch --prefix /lilypond
 
 ENV PATH "/lilypond/bin:${PATH}"
 
-RUN if [ "${ly2video}" != "false" ]; then apt-get update && apt-get install -y \
+# Install fonts for LilyPond
+COPY install-fonts.sh ./
+RUN ./install-fonts.sh
+
+RUN if [ "${ly2video}" != "false" ]; then \
+  apt-get update && apt-get install -y \
   git \
   ffmpeg \
   timidity \
