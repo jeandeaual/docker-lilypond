@@ -40,4 +40,4 @@ WORKDIR /app
 
 RUN rm -rf /install
 
-CMD ["lilypond", "-dno-point-and-click"]
+CMD ["lilypond", "-v"]
