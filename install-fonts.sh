@@ -47,3 +47,27 @@ wget "${lilyjazz_repo}/raw/master/supplementary-files/lilyjazz-text/lilyjazz-tex
 for stylesheet in jazzchords jazzextras lilyjazz; do
     wget "${lilyjazz_repo}/raw/master/stylesheet/${stylesheet}.ily" -P "${ly_folder}/"
 done
+
+# Gonville
+# See https://lilypond.org/doc/stable/Documentation/notation/replacing-the-notation-font
+readonly tmp_folder=$(mktemp -d)
+function cleanup {
+    rm -rf "${tmp_folder}"
+}
+trap cleanup EXIT
+
+(
+    readonly archive="gonville-20200703.bedc4d7.tar.gz"
+
+    cd "${tmp_folder}"
+
+    wget "https://www.chiark.greenend.org.uk/~sgtatham/gonville/${archive}" -P "${tmp_folder}/"
+    tar -xvzf "${archive}"
+
+    cd "${archive%.tar.*}"
+
+    mv *.otf "${otf_folder}/"
+    mv *.svg "${svg_folder}/"
+    mv *.woff "${svg_folder}/"
+    mv *.ily "${ly_folder}/"
+)
