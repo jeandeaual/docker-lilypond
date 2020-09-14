@@ -31,21 +31,84 @@ if [[ ! -d "${otf_folder}" || ! -d "${svg_folder}" || ! -d "${ly_folder}" ]]; th
     exit 1
 fi
 
-# LilyJAZZ
+# OpenLilyPondFonts
 # See https://github.com/OpenLilyPondFonts/lilyjazz/blob/master/LilyPond-Fonts-Installation-And-Usage.txt
-readonly lilyjazz_repo="https://github.com/OpenLilyPondFonts/lilyjazz"
+readonly font_names=(
+    "lilyjazz"
+    "profondo"
+    "haydn"
+    "beethoven"
+    "paganini"
+    "improviso"
+    # See https://github.com/lyp-packages/bravura/blob/master/package.ly
+    # and http://lilypondblog.org/2020/08/google-summer-of-code-2020-smufl/
+    "bravura"
+    "lilyboulez"
+    "scorlatti"
+    "lv-goldenage"
+    "gutenberg1939"
+    "ross"
+    "sebastiano"
+    "cadence"
+)
 
-for size in 11 13 14 16 18 20 23 26 brace; do
-    wget "${lilyjazz_repo}/raw/master/otf/lilyjazz-${size}.otf" -P "${otf_folder}/"
-    wget "${lilyjazz_repo}/raw/master/svg/lilyjazz-${size}.svg" -P "${svg_folder}/"
-    wget "${lilyjazz_repo}/raw/master/svg/lilyjazz-${size}.woff" -P "${svg_folder}/"
-done
+for font_name in "${font_names[@]}"; do
+    repo="https://github.com/OpenLilyPondFonts/${font_name}"
+    sizes=(11 13 14 16 18 20 23 26)
 
-wget "${lilyjazz_repo}/raw/master/supplementary-files/lilyjazz-chord/lilyjazz-chord.otf" -P "${otf_folder}/"
-wget "${lilyjazz_repo}/raw/master/supplementary-files/lilyjazz-text/lilyjazz-text.otf" -P "${otf_folder}/"
+    case "${font_name}" in
+        "paganini"|"lilyboulez"|"lv-goldenage"|"cadence")
+            # These fonts don't have a brace font file
+            ;;
+        "bravura")
+            # Bravura is a SMuFL font
+            sizes=()
+            ;;
+        *)
+            sizes+=("brace")
+            ;;
+    esac
 
-for stylesheet in jazzchords jazzextras lilyjazz; do
-    wget "${lilyjazz_repo}/raw/master/stylesheet/${stylesheet}.ily" -P "${ly_folder}/"
+    for size in "${sizes[@]}"; do
+        wget "${repo}/raw/master/otf/${font_name}-${size}.otf" -P "${otf_folder}/"
+        wget "${repo}/raw/master/svg/${font_name}-${size}.svg" -P "${svg_folder}/"
+        wget "${repo}/raw/master/svg/${font_name}-${size}.woff" -P "${svg_folder}/"
+    done
+
+    case "${font_name}" in
+        "lilyjazz")
+            wget "${repo}/raw/master/supplementary-files/lilyjazz-chord/lilyjazz-chord.otf" -P "${otf_folder}/"
+            wget "${repo}/raw/master/supplementary-files/lilyjazz-text/lilyjazz-text.otf" -P "${otf_folder}/"
+
+            for stylesheet in jazzchords jazzextras lilyjazz; do
+                wget "${repo}/raw/master/stylesheet/${stylesheet}.ily" -P "${ly_folder}/"
+            done
+            ;;
+        "profondo")
+            wget "${repo}/raw/master/supplementary-fonts/ProfondoTupletNumbers.otf" -P "${otf_folder}/"
+            ;;
+        "improviso")
+            wget "${repo}/raw/master/supplementary-fonts/PeaMissywithaMarker.otf" -P "${otf_folder}/"
+            wget "${repo}/raw/master/supplementary-fonts/PermanentMarker.ttf" -P "${otf_folder}/"
+            wget "${repo}/raw/master/supplementary-fonts/Thickmarker.otf" -P "${otf_folder}/"
+            ;;
+        "lv-goldenage")
+            wget "${repo}/raw/master/supplementary-fonts/GoldenAgeText.otf" -P "${otf_folder}/"
+            wget "${repo}/raw/master/supplementary-fonts/GoldenAgeTitle.otf" -P "${otf_folder}/"
+            ;;
+        "bravura")
+            wget "${repo}/raw/master/otf/Bravura.otf" -P "${otf_folder}/"
+            wget "${repo}/raw/master/otf/BravuraText.otf" -P "${otf_folder}/"
+            wget "${repo}/raw/master/svg/Bravura.svg" -P "${svg_folder}/"
+            wget "${repo}/raw/master/svg/BravuraText.svg" -P "${svg_folder}/"
+            wget "${repo}/raw/master/woff/Bravura.woff" -P "${svg_folder}/"
+            wget "${repo}/raw/master/woff/BravuraText.woff" -P "${svg_folder}/"
+            # See http://lilypondblog.org/2020/08/google-summer-of-code-2020-smufl/
+            wget "${repo}/raw/master/bravura_metadata.json" -O "${otf_folder}/bravura.json"
+            ;;
+    esac
+
+    sleep 1
 done
 
 # Gonville

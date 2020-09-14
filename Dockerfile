@@ -7,7 +7,9 @@ ARG install_fonts="true"
 ARG install_ly2video="false"
 
 RUN apt-get update && apt-get install -y \
+  # Required by the LilyPond installation script
   bzip2 \
+  # Required by install-fonts.sh
   wget \
   && rm -rf /var/lib/apt/lists/*
 
