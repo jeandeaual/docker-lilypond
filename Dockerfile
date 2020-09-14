@@ -3,7 +3,8 @@ FROM debian:buster-slim
 LABEL maintainer="alexis.jeandeau@gmail.com"
 
 ARG lilypond_version="2.20.0"
-ARG ly2video="false"
+ARG install_fonts="true"
+ARG install_ly2video="false"
 
 RUN apt-get update && apt-get install -y \
   bzip2 \
@@ -21,9 +22,9 @@ ENV PATH "/lilypond/bin:${PATH}"
 
 # Install fonts for LilyPond
 COPY install-fonts.sh ./
-RUN ./install-fonts.sh /lilypond/lilypond/usr/share/lilypond/current
+RUN [ "${install_fonts}" = "true" ] && ./install-fonts.sh /lilypond/lilypond/usr/share/lilypond/current
 
-RUN if [ "${ly2video}" != "false" ]; then \
+RUN if [ "${install_ly2video}" != "false" ]; then \
   apt-get update && apt-get install -y \
   git \
   ffmpeg \

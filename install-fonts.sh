@@ -66,8 +66,8 @@ trap cleanup EXIT
 
     cd "${archive%.tar.*}"
 
-    mv *.otf "${otf_folder}/"
-    mv *.svg "${svg_folder}/"
-    mv *.woff "${svg_folder}/"
-    mv *.ily "${ly_folder}/"
+    mv ./*.otf "${otf_folder}/"
+    mv ./*.svg "${svg_folder}/"
+    mv ./*.woff "${svg_folder}/"
+    mv ./*.ily "${ly_folder}/"
 )

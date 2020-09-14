@@ -5,5 +5,5 @@ docker build \
     .
 docker build \
     -t jeandeaual/lilypond-ly2video-stable \
-    --build-arg ly2video="true" \
+    --build-arg install_ly2video="true" \
     .

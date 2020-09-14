@@ -9,5 +9,5 @@ docker build \
 docker build \
     -t jeandeaual/lilypond-ly2video-devel \
     --build-arg lilypond_version="${lilypond_version}" \
-    --build-arg ly2video="true" \
+    --build-arg install_ly2video="true" \
     .
