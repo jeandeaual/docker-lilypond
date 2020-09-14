@@ -21,7 +21,7 @@ ENV PATH "/lilypond/bin:${PATH}"
 
 # Install fonts for LilyPond
 COPY install-fonts.sh ./
-RUN ./install-fonts.sh
+RUN ./install-fonts.sh /lilypond/lilypond/usr/share/lilypond/current
 
 RUN if [ "${ly2video}" != "false" ]; then \
   apt-get update && apt-get install -y \

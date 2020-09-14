@@ -1,9 +1,35 @@
 #!/bin/bash
 
-readonly lilypond_folder="/lilypond/lilypond/usr/share/lilypond/current"
+set -euo pipefail
+
+command -v wget &>/dev/null || {
+    echo "wget needs to be installed" 2>&1
+    exit 1
+}
+
+usage () {
+    echo "Usage: $(basename "$0") LILYPOND_FOLDER (e.g. /usr/share/lilypond/X.Y.Z)"
+}
+
+if [[ $# -ne 1 ]]; then
+    usage
+    exit 1
+fi
+
+if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+    usage
+    exit 0
+fi
+
+readonly lilypond_folder="$1"
 readonly otf_folder="${lilypond_folder}/fonts/otf"
 readonly svg_folder="${lilypond_folder}/fonts/svg"
 readonly ly_folder="${lilypond_folder}/ly"
+
+if [[ ! -d "${otf_folder}" || ! -d "${svg_folder}" || ! -d "${ly_folder}" ]]; then
+    echo "Invalid LilyPond folder: ${lilypond_folder}" 1>&2
+    exit 1
+fi
 
 # LilyJAZZ
 # See https://github.com/OpenLilyPondFonts/lilyjazz/blob/master/LilyPond-Fonts-Installation-And-Usage.txt
