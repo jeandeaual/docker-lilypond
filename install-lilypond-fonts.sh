@@ -31,6 +31,11 @@ if [[ ! -d "${otf_folder}" || ! -d "${svg_folder}" || ! -d "${ly_folder}" ]]; th
     exit 1
 fi
 
+if [[ ! -w "${otf_folder}" || ! -w "${svg_folder}" || ! -w "${ly_folder}" ]]; then
+    echo "No write permission on LilyPond folder: ${lilypond_folder}" 1>&2
+    exit 1
+fi
+
 # OpenLilyPondFonts
 # See https://github.com/OpenLilyPondFonts/lilyjazz/blob/master/LilyPond-Fonts-Installation-And-Usage.txt
 readonly font_names=(
@@ -61,7 +66,7 @@ for font_name in "${font_names[@]}"; do
             # These fonts don't have a brace font file
             ;;
         "bravura")
-            # Bravura is a SMuFL font
+            # Bravura is a SMuFL font, so no font file for individual sizes
             sizes=()
             ;;
         *)
@@ -75,6 +80,7 @@ for font_name in "${font_names[@]}"; do
         wget "${repo}/raw/master/svg/${font_name}-${size}.woff" -P "${svg_folder}/"
     done
 
+    # Supplementary files
     case "${font_name}" in
         "lilyjazz")
             wget "${repo}/raw/master/supplementary-files/lilyjazz-chord/lilyjazz-chord.otf" -P "${otf_folder}/"
@@ -97,6 +103,7 @@ for font_name in "${font_names[@]}"; do
             wget "${repo}/raw/master/supplementary-fonts/GoldenAgeTitle.otf" -P "${otf_folder}/"
             ;;
         "bravura")
+            # Special handling for Bravura which is a SMuFL font
             wget "${repo}/raw/master/otf/Bravura.otf" -P "${otf_folder}/"
             wget "${repo}/raw/master/otf/BravuraText.otf" -P "${otf_folder}/"
             wget "${repo}/raw/master/svg/Bravura.svg" -P "${svg_folder}/"
