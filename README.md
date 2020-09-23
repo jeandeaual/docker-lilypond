@@ -6,6 +6,55 @@ Docker image for [LilyPond](https://lilypond.org/), including [ly2video](https:/
 
 In order to run this container you'll need [Docker](https://docs.docker.com/get-started/#set-up-your-docker-environment).
 
+## Supported Tags
+
+* `stable` (latest [stable version](https://lilypond.org/download.html))
+    * `2.20.0`
+    * `2.18.2`
+* `devel` (latest [development version](https://lilypond.org/development.html))
+    * `2.21.6`
+    * `2.21.5`
+    * `2.21.4`
+    * `2.21.3`
+    * `2.21.2`
+    * `2.21.1`
+    * `2.21.0`
+
+All tags are available with the following variants:
+
+* `-ly2video`
+
+    Includes [ly2video](https://github.com/aspiers/ly2video).
+
+    This requires Python and makes the image quite larger, so I made it a separate tag.
+
+* `-fonts`
+
+    Includes various open-sources fonts (mainly from [OpenLilyFonts](https://github.com/OpenLilyPondFonts])).
+
+    For usage, see <https://lilypond.org/doc/stable/Documentation/notation/replacing-the-notation-font> and <https://lilypond.org/doc/stable/Documentation/notation/fonts.html>
+
+    * LilyPond fonts:
+
+        * Gonville
+        * LilyJAZZ
+        * Profondo
+        * Haydn
+        * Beethoven
+        * Paganini
+        * Improviso
+        * Bravura
+        * Lily Boulez
+        * Scorlatti
+        * LV GoldenAge
+        * Gutenberg1939
+        * Ross
+        * Sebastiano
+        * Cadence
+
+    * System fonts:
+        * [Libertinus](https://github.com/alerque/libertinus)
+
 ## Usage
 
 ### Command-line Examples
