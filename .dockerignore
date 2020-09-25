@@ -1,0 +1,4 @@
+*.md
+LICENSE
+build*.sh
+run*.sh
