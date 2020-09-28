@@ -1,0 +1,83 @@
+name: Build the images
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'LilyPond version'
+        required: true
+      tag:
+        description: 'Image tag ("stable" or "devel")'
+        required: true
+        default: 'devel'
+      latest:
+        description: 'Latest'
+        required: true
+        default: 'true'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push (latest)
+        id: docker_build_latest
+        uses: docker/build-push-action@v2
+        if: github.event.inputs.latest == 'true'
+        with:
+          push: true
+          build-args: |
+            lilypond_version=${{ github.event.inputs.version }}
+          tags: |
+            jeandeaual/lilypond:latest
+            jeandeaual/lilypond:${{ github.event.inputs.tag }}
+            jeandeaual/lilypond:${{ github.event.inputs.version }}
+      - name: Image digest (latest)
+        if: github.event.inputs.latest == 'true'
+        run: echo ${{ steps.docker_build_latest.outputs.digest }}
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        if: github.event.inputs.latest != 'true'
+        with:
+          push: true
+          build-args: |
+            lilypond_version=${{ github.event.inputs.version }}
+          tags: |
+            jeandeaual/lilypond:${{ github.event.inputs.tag }}
+            jeandeaual/lilypond:${{ github.event.inputs.version }}
+      - name: Image digest
+        if: github.event.inputs.latest != 'true'
+        run: echo ${{ steps.docker_build.outputs.digest }}
+      - name: Build and push (fonts)
+        id: docker_build_fonts
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          build-args: |
+            lilypond_version=${{ github.event.inputs.version }}
+            install_fonts=true
+          tags: |
+            jeandeaual/lilypond:${{ github.event.inputs.tag }}-fonts
+            jeandeaual/lilypond:${{ github.event.inputs.version }}-fonts
+      - name: Image digest (fonts)
+        run: echo ${{ steps.docker_build_fonts.outputs.digest }}
+      - name: Build and push (ly2video)
+        id: docker_build_ly2video
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          build-args: |
+            lilypond_version=${{ github.event.inputs.version }}
+            install_ly2video=true
+          tags: |
+            jeandeaual/lilypond:${{ github.event.inputs.tag}}-ly2video
+            jeandeaual/lilypond:${{ github.event.inputs.version }}-ly2video
+      - name: Image digest (ly2video)
+        run: echo ${{ steps.docker_build_ly2video.outputs.digest }}
