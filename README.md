@@ -1,4 +1,6 @@
-# [LilyPond Docker Image](https://hub.docker.com/r/jeandeaual/lilypond)
+# LilyPond Docker Image
+
+[![LilyPond logo](https://lilypond.org/pictures/double-lily-modified3.png)](https://lilypond.org)
 
 Docker image for the music engraving program, [LilyPond](https://lilypond.org/), with variants including [ly2video](https://github.com/aspiers/ly2video) and [open-source fonts](https://github.com/OpenLilyPondFonts).
 
