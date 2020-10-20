@@ -42,7 +42,7 @@ function cleanup {
 trap cleanup EXIT
 
 # Libertinus
-readonly libertinus_version="7.000"
+readonly libertinus_version="7.020"
 readonly libertinus_archive="Libertinus-${libertinus_version}.tar.xz"
 
 wget "https://github.com/alerque/libertinus/releases/download/v${libertinus_version}/${libertinus_archive}" -O "${tmp_folder}/${libertinus_archive}"
