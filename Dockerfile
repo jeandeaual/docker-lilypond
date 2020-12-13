@@ -7,6 +7,7 @@ ARG install_fonts="false"
 ARG install_ly2video="false"
 
 RUN apt-get update && apt-get install -y \
+  make \
   # Required by the LilyPond installation script
   bzip2
 
