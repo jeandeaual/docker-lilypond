@@ -6,10 +6,15 @@ ARG lilypond_version="2.20.0"
 ARG install_fonts="false"
 ARG install_ly2video="false"
 
-RUN apt-get update && apt-get install -y \
-  make \
-  # Required by the LilyPond installation script
-  bzip2
+RUN printf 'LANG="C"\nLANGUAGE="C"\nLC_ALL="C"\n' > /etc/default/locale
+
+RUN apt-get update \
+  && export DEBIAN_FRONTEND=noninteractive \
+  && apt-get install -y --no-install-recommends \
+    make \
+    qpdf \
+    # Required by the LilyPond installation script
+    bzip2
 
 WORKDIR /install
 
