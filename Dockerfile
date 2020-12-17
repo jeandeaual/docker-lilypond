@@ -1,4 +1,4 @@
-FROM debian:buster-slim
+FROM debian:bullseye-slim
 
 LABEL maintainer="alexis.jeandeau@gmail.com"
 
@@ -6,11 +6,15 @@ ARG lilypond_version="2.20.0"
 ARG install_fonts="false"
 ARG install_ly2video="false"
 
+SHELL ["/bin/bash", "-c"]
+
 RUN printf 'LANG="C"\nLANGUAGE="C"\nLC_ALL="C"\n' > /etc/default/locale
 
-RUN apt-get update \
+RUN source /etc/default/locale \
   && export DEBIAN_FRONTEND=noninteractive \
+  && apt-get update \
   && apt-get install -y --no-install-recommends \
+    locales \
     make \
     qpdf \
     # Required by the LilyPond installation script
