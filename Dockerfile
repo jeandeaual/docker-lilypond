@@ -2,7 +2,7 @@ FROM debian:bullseye-slim
 
 LABEL maintainer="alexis.jeandeau@gmail.com"
 
-ARG lilypond_version="2.20.0"
+ARG lilypond_version="2.22.0"
 ARG install_fonts="false"
 ARG install_ly2video="false"
 

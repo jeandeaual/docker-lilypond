@@ -11,6 +11,7 @@ In order to run this container you'll need [Docker](https://docs.docker.com/get-
 ## Supported Tags
 
 * `stable` (latest [stable version](https://lilypond.org/download.html))
+    * `2.22.0`
     * `2.20.0`
     * `2.18.2`
     * `2.18.1`
@@ -67,10 +68,10 @@ All tags are available with the following variants:
 
 ### Command-line Examples
 
-Build a file using LilyPond 2.20.0:
+Build a file using LilyPond 2.22.0:
 
 ```sh
-docker run -v $(pwd):/app -w /app jeandeaual/lilypond:2.20.0 lilypond -dno-point-and-click main.ly
+docker run -v $(pwd):/app -w /app jeandeaual/lilypond:2.22.0 lilypond -dno-point-and-click main.ly
 ```
 
 Run ly2video on your LilyPond file (with the latest stable LilyPond version):
@@ -103,7 +104,7 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v2
       - name: Build PDF
-        uses: docker://jeandeaual/lilypond:2.20.0
+        uses: docker://jeandeaual/lilypond:2.22.0
         with:
           args: lilypond -dno-point-and-click -dembed-source-code -dpaper-size=\"a4\" -o build main.ly
       - name: Get short SHA
