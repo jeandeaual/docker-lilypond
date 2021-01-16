@@ -39,29 +39,30 @@ All tags are available with the following variants:
 
 * `-fonts`
 
-    Includes various open-sources fonts (mainly from [OpenLilyFonts](https://github.com/OpenLilyPondFonts])).
+    Includes various open-sources fonts (mainly from [OpenLilyFonts](https://github.com/OpenLilyPondFonts)).
 
     For usage, see <https://lilypond.org/doc/stable/Documentation/notation/replacing-the-notation-font> and <https://lilypond.org/doc/stable/Documentation/notation/fonts.html>
 
     * LilyPond fonts:
 
-        * Gonville
-        * LilyJAZZ
-        * Profondo
-        * Haydn
-        * Beethoven
-        * Paganini
-        * Improviso
-        * Bravura
-        * Lily Boulez
-        * Scorlatti
-        * LV GoldenAge
-        * Gutenberg1939
-        * Ross
-        * Sebastiano
-        * Cadence
+        * [Gonville](https://www.chiark.greenend.org.uk/~sgtatham/gonville/)
+        * [LilyJAZZ](https://github.com/OpenLilyPondFonts/lilyjazz)
+        * [Profondo](https://github.com/OpenLilyPondFonts/profondo)
+        * [Haydn](https://github.com/OpenLilyPondFonts/haydn)
+        * [Beethoven](https://github.com/OpenLilyPondFonts/beethoven)
+        * [Paganini](https://github.com/OpenLilyPondFonts/paganini)
+        * [Improviso](https://github.com/OpenLilyPondFonts/improviso)
+        * [Bravura](https://github.com/OpenLilyPondFonts/bravura)
+        * [Lily Boulez](https://github.com/OpenLilyPondFonts/lilyboulez)
+        * [Scorlatti](https://github.com/OpenLilyPondFonts/scorlatti)
+        * [LV GoldenAge](https://github.com/OpenLilyPondFonts/lv-goldenage)
+        * [Gutenberg1939](https://github.com/OpenLilyPondFonts/gutenberg1939)
+        * [Ross](https://github.com/OpenLilyPondFonts/ross)
+        * [Sebastiano](https://github.com/OpenLilyPondFonts/sebastiano)
+        * [Cadence](https://github.com/OpenLilyPondFonts/cadence)
 
     * System fonts:
+
         * [Libertinus](https://github.com/alerque/libertinus)
 
 ## Usage
