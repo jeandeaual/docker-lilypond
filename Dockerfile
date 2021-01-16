@@ -31,7 +31,7 @@ ENV PATH "/lilypond/bin:${PATH}"
 
 # Install fonts for LilyPond
 COPY install-lilypond-fonts.sh install-system-fonts.sh ./
-RUN if [ "${install_fonts}" != "false" ]; then \
+RUN if [[ "${install_fonts}" != "false" ]]; then \
   apt-get install -y \
   fontconfig \
   # Required by install-lilypond-fonts.sh and install-system-fonts.sh
@@ -49,17 +49,17 @@ RUN if [ "${install_fonts}" != "false" ]; then \
   && ./install-lilypond-fonts.sh /lilypond/lilypond/usr/share/lilypond/current \
   && fc-cache -fv; fi
 
-RUN if [ "${install_ly2video}" != "false" ]; then \
+RUN if [[ "${install_ly2video}" != "false" ]]; then \
   apt-get install -y \
   git \
   ffmpeg \
   timidity \
-  python-pip \
-  python-pil \
+  python3-pip \
+  python3-pil \
   swig \
   libasound-dev \
   && git clone https://github.com/aspiers/ly2video.git \
-  && cd ly2video && pip2 install -r requirements.txt && pip2 install .; fi
+  && cd ly2video && pip3 install -r requirements.txt && pip3 install .; fi
 
 WORKDIR /app
 
