@@ -19,3 +19,10 @@ docker build \
     --build-arg lilypond_version="${lilypond_version}" \
     --build-arg install_ly2video="true" \
     .
+docker build \
+    -t "jeandeaual/lilypond:stable-fonts-ly2video" \
+    -t "jeandeaual/lilypond:${lilypond_version}-fonts-ly2video" \
+    --build-arg lilypond_version="${lilypond_version}" \
+    --build-arg install_fonts="true" \
+    --build-arg install_ly2video="true" \
+    .
