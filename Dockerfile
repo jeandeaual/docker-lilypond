@@ -52,12 +52,16 @@ RUN if [[ "${install_fonts}" != "false" ]]; then \
 RUN if [[ "${install_ly2video}" != "false" ]]; then \
   apt-get install -y \
   git \
+  # Required by ly2video
   ffmpeg \
   timidity \
   python3-pip \
   python3-pil \
   swig \
   libasound-dev \
+  # Required by Pillow
+  libjpeg-dev \
+  zlib1g-dev \
   && git clone https://github.com/aspiers/ly2video.git \
   && cd ly2video && pip3 install -r requirements.txt && pip3 install .; fi
 
