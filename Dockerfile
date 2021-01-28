@@ -47,12 +47,16 @@ RUN apt-get install -y --no-install-recommends \
   fonts-ipaexfont \
   fonts-hanazono \
   fonts-noto-core \
-  fonts-noto-cjk \
-  # Manual system font installation (not in the repositories)
-  && ./install-system-fonts.sh \
-  # LilyPond font installation
-  && ./install-lilypond-fonts.sh /lilypond/lilypond/usr/share/lilypond/current \
-  && fc-cache -fv
+  fonts-noto-cjk
+
+# Manual system font installation (not in the repositories)
+RUN ./install-system-fonts.sh
+
+# LilyPond font installation
+RUN ./install-lilypond-fonts.sh /lilypond/lilypond/usr/share/lilypond/current
+
+# Cleanup
+RUN fc-cache -fv && apt-get remove -y bzip2 wget xz-utils && apt-get autoremove -y
 
 # Image with ly2video
 FROM lilypond AS lilypond-ly2video
@@ -67,6 +71,8 @@ RUN apt-get install -y --no-install-recommends \
   # Required by ly2video
   ffmpeg \
   timidity \
+  fluid-soundfont-gm \
+  fluid-soundfont-gs \
   build-essential \
   python3-pip \
   python3-pil \
@@ -75,8 +81,12 @@ RUN apt-get install -y --no-install-recommends \
   libasound-dev \
   # Required by Pillow
   libjpeg-dev \
-  zlib1g-dev \
-  && ./install-ly2video.sh
+  zlib1g-dev
+
+RUN ./install-ly2video.sh
+
+# Cleanup
+RUN apt-get remove -y build-essential python3-dev libasound-dev libjpeg-dev zlib1g-dev && apt-get autoremove -y
 
 # Image with both the fonts and ly2video
 FROM lilypond-fonts AS lilypond-fonts-ly2video
@@ -97,8 +107,12 @@ RUN apt-get install -y --no-install-recommends \
   libasound-dev \
   # Required by Pillow
   libjpeg-dev \
-  zlib1g-dev \
-  && ./install-ly2video.sh
+  zlib1g-dev
+
+RUN ./install-ly2video.sh
+
+# Cleanup
+RUN apt-get remove -y build-essential python3-dev libasound-dev libjpeg-dev zlib1g-dev && apt-get autoremove -y
 
 # Final image
 FROM lilypond${suffix} AS final
