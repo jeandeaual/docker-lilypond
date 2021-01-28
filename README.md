@@ -17,6 +17,7 @@ In order to run this container you'll need [Docker](https://docs.docker.com/get-
     * `2.18.1`
     * `2.18.0`
 * `devel` (latest [development version](https://lilypond.org/development.html))
+    * `2.23.0`
     * `2.21.82`
     * `2.21.81`
     * `2.21.80`
@@ -105,7 +106,7 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v2
       - name: Build PDF
-        uses: docker://jeandeaual/lilypond:2.22.0
+        uses: docker://jeandeaual/lilypond:stable
         with:
           args: lilypond -dno-point-and-click -dembed-source-code -dpaper-size=\"a4\" -o build main.ly
       - name: Get short SHA
@@ -121,7 +122,7 @@ jobs:
 ### GitLab CI
 
 ```yml
-image: jeandeaual/lilypond
+image: jeandeaual/lilypond:stable
 
 stages:
   - build
@@ -132,5 +133,5 @@ lilypond:
     - lilypond -dno-point-and-click main.ly
   artifacts:
     paths:
-    - *.pdf
+      - *.pdf
 ```

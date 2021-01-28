@@ -56,6 +56,7 @@ readonly font_names=(
     "sebastiano"
     "cadence"
 )
+readonly wget_options="--no-check-certificate"
 
 for font_name in "${font_names[@]}"; do
     repo="https://github.com/OpenLilyPondFonts/${font_name}"
@@ -75,43 +76,43 @@ for font_name in "${font_names[@]}"; do
     esac
 
     for size in "${sizes[@]}"; do
-        wget "${repo}/raw/master/otf/${font_name}-${size}.otf" -P "${otf_folder}/"
-        wget "${repo}/raw/master/svg/${font_name}-${size}.svg" -P "${svg_folder}/"
-        wget "${repo}/raw/master/svg/${font_name}-${size}.woff" -P "${svg_folder}/"
+        wget "${repo}/raw/master/otf/${font_name}-${size}.otf" -P "${otf_folder}/" "${wget_options}"
+        wget "${repo}/raw/master/svg/${font_name}-${size}.svg" -P "${svg_folder}/" "${wget_options}"
+        wget "${repo}/raw/master/svg/${font_name}-${size}.woff" -P "${svg_folder}/" "${wget_options}"
     done
 
     # Supplementary files
     case "${font_name}" in
         "lilyjazz")
-            wget "${repo}/raw/master/supplementary-files/lilyjazz-chord/lilyjazz-chord.otf" -P "${otf_folder}/"
-            wget "${repo}/raw/master/supplementary-files/lilyjazz-text/lilyjazz-text.otf" -P "${otf_folder}/"
+            wget "${repo}/raw/master/supplementary-files/lilyjazz-chord/lilyjazz-chord.otf" -P "${otf_folder}/" "${wget_options}"
+            wget "${repo}/raw/master/supplementary-files/lilyjazz-text/lilyjazz-text.otf" -P "${otf_folder}/" "${wget_options}"
 
             for stylesheet in jazzchords jazzextras lilyjazz; do
-                wget "${repo}/raw/master/stylesheet/${stylesheet}.ily" -P "${ly_folder}/"
+                wget "${repo}/raw/master/stylesheet/${stylesheet}.ily" -P "${ly_folder}/" "${wget_options}"
             done
             ;;
         "profondo")
-            wget "${repo}/raw/master/supplementary-fonts/ProfondoTupletNumbers.otf" -P "${otf_folder}/"
+            wget "${repo}/raw/master/supplementary-fonts/ProfondoTupletNumbers.otf" -P "${otf_folder}/" "${wget_options}"
             ;;
         "improviso")
-            wget "${repo}/raw/master/supplementary-fonts/PeaMissywithaMarker.otf" -P "${otf_folder}/"
-            wget "${repo}/raw/master/supplementary-fonts/PermanentMarker.ttf" -P "${otf_folder}/"
-            wget "${repo}/raw/master/supplementary-fonts/Thickmarker.otf" -P "${otf_folder}/"
+            wget "${repo}/raw/master/supplementary-fonts/PeaMissywithaMarker.otf" -P "${otf_folder}/" "${wget_options}"
+            wget "${repo}/raw/master/supplementary-fonts/PermanentMarker.ttf" -P "${otf_folder}/" "${wget_options}"
+            wget "${repo}/raw/master/supplementary-fonts/Thickmarker.otf" -P "${otf_folder}/" "${wget_options}"
             ;;
         "lv-goldenage")
-            wget "${repo}/raw/master/supplementary-fonts/GoldenAgeText.otf" -P "${otf_folder}/"
-            wget "${repo}/raw/master/supplementary-fonts/GoldenAgeTitle.otf" -P "${otf_folder}/"
+            wget "${repo}/raw/master/supplementary-fonts/GoldenAgeText.otf" -P "${otf_folder}/" "${wget_options}"
+            wget "${repo}/raw/master/supplementary-fonts/GoldenAgeTitle.otf" -P "${otf_folder}/" "${wget_options}"
             ;;
         "bravura")
             # Special handling for Bravura which is a SMuFL font
-            wget "${repo}/raw/master/otf/Bravura.otf" -P "${otf_folder}/"
-            wget "${repo}/raw/master/otf/BravuraText.otf" -P "${otf_folder}/"
-            wget "${repo}/raw/master/svg/Bravura.svg" -P "${svg_folder}/"
-            wget "${repo}/raw/master/svg/BravuraText.svg" -P "${svg_folder}/"
-            wget "${repo}/raw/master/woff/Bravura.woff" -P "${svg_folder}/"
-            wget "${repo}/raw/master/woff/BravuraText.woff" -P "${svg_folder}/"
+            wget "${repo}/raw/master/otf/Bravura.otf" -P "${otf_folder}/" "${wget_options}"
+            wget "${repo}/raw/master/otf/BravuraText.otf" -P "${otf_folder}/" "${wget_options}"
+            wget "${repo}/raw/master/svg/Bravura.svg" -P "${svg_folder}/" "${wget_options}"
+            wget "${repo}/raw/master/svg/BravuraText.svg" -P "${svg_folder}/" "${wget_options}"
+            wget "${repo}/raw/master/woff/Bravura.woff" -P "${svg_folder}/" "${wget_options}"
+            wget "${repo}/raw/master/woff/BravuraText.woff" -P "${svg_folder}/" "${wget_options}"
             # See http://lilypondblog.org/2020/08/google-summer-of-code-2020-smufl/
-            wget "${repo}/raw/master/bravura_metadata.json" -O "${otf_folder}/bravura.json"
+            wget "${repo}/raw/master/bravura_metadata.json" -O "${otf_folder}/bravura.json" "${wget_options}"
             ;;
     esac
 
@@ -131,7 +132,7 @@ trap cleanup EXIT
 
     cd "${tmp_folder}"
 
-    wget "https://www.chiark.greenend.org.uk/~sgtatham/gonville/${archive}" -P "${tmp_folder}/"
+    wget "https://www.chiark.greenend.org.uk/~sgtatham/gonville/${archive}" -P "${tmp_folder}/" "${wget_options}"
     tar -xvzf "${archive}"
 
     cd "${archive%.tar.*}"

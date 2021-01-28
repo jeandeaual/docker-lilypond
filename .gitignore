@@ -83,6 +83,7 @@ Sessionx.vim
 .netrwhist
 # Auto-generated tag files
 tags
+tags.lock
 # Persistent undo
 [._]*.un~
 

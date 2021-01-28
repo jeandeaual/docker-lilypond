@@ -44,7 +44,10 @@ trap cleanup EXIT
 # Libertinus
 readonly libertinus_version="7.031"
 readonly libertinus_archive="Libertinus-${libertinus_version}.tar.xz"
+readonly wget_options="--no-check-certificate"
 
-wget "https://github.com/alerque/libertinus/releases/download/v${libertinus_version}/${libertinus_archive}" -O "${tmp_folder}/${libertinus_archive}"
+wget "https://github.com/alerque/libertinus/releases/download/v${libertinus_version}/${libertinus_archive}" \
+    -O "${tmp_folder}/${libertinus_archive}" \
+    "${wget_options}"
 tar -xvJf "${tmp_folder}/${libertinus_archive}" -C "${tmp_folder}/"
 mv -v "${tmp_folder}/Libertinus-${libertinus_version}"/static/OTF/*.otf "${font_folder}/"

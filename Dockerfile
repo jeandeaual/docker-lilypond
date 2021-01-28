@@ -1,10 +1,8 @@
-FROM debian:bullseye-slim
+# ARGs used in FROM need to be declared before the first FROM
+# See https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
+ARG suffix=""
 
-LABEL maintainer="alexis.jeandeau@gmail.com"
-
-ARG lilypond_version="2.22.0"
-ARG install_fonts="false"
-ARG install_ly2video="false"
+FROM debian:bullseye-slim AS lilypond
 
 SHELL ["/bin/bash", "-c"]
 
@@ -22,6 +20,8 @@ RUN source /etc/default/locale \
 
 WORKDIR /install
 
+ARG lilypond_version="2.22.0"
+
 # Install LilyPond
 ADD "https://lilypond.org/download/binaries/linux-64/lilypond-${lilypond_version}-1.linux-64.sh" ./
 RUN chmod +x "lilypond-${lilypond_version}-1.linux-64.sh"
@@ -29,10 +29,15 @@ RUN "./lilypond-${lilypond_version}-1.linux-64.sh" --batch --prefix /lilypond
 
 ENV PATH "/lilypond/bin:${PATH}"
 
-# Install fonts for LilyPond
+# Image with the fonts
+FROM lilypond AS lilypond-fonts
+
+SHELL ["/bin/bash", "-c"]
+
 COPY install-lilypond-fonts.sh install-system-fonts.sh ./
-RUN if [[ "${install_fonts}" != "false" ]]; then \
-  apt-get install -y \
+
+# Install fonts for LilyPond
+RUN apt-get install -y --no-install-recommends \
   fontconfig \
   # Required by install-lilypond-fonts.sh and install-system-fonts.sh
   wget \
@@ -47,26 +52,62 @@ RUN if [[ "${install_fonts}" != "false" ]]; then \
   && ./install-system-fonts.sh \
   # LilyPond font installation
   && ./install-lilypond-fonts.sh /lilypond/lilypond/usr/share/lilypond/current \
-  && fc-cache -fv; fi
+  && fc-cache -fv
 
-RUN if [[ "${install_ly2video}" != "false" ]]; then \
-  apt-get install -y \
+# Image with ly2video
+FROM lilypond AS lilypond-ly2video
+
+SHELL ["/bin/bash", "-c"]
+
+COPY install-ly2video.sh ./
+
+# Install ly2video
+RUN apt-get install -y --no-install-recommends \
   git \
   # Required by ly2video
   ffmpeg \
   timidity \
+  build-essential \
   python3-pip \
   python3-pil \
+  python3-dev \
   swig \
   libasound-dev \
   # Required by Pillow
   libjpeg-dev \
   zlib1g-dev \
-  && git clone https://github.com/aspiers/ly2video.git \
-  && cd ly2video && pip3 install -r requirements.txt && pip3 install .; fi
+  && ./install-ly2video.sh
+
+# Image with both the fonts and ly2video
+FROM lilypond-fonts AS lilypond-fonts-ly2video
+
+COPY install-ly2video.sh ./
+
+# Install ly2video
+RUN apt-get install -y --no-install-recommends \
+  git \
+  # Required by ly2video
+  ffmpeg \
+  timidity \
+  build-essential \
+  python3-pip \
+  python3-pil \
+  python3-dev \
+  swig \
+  libasound-dev \
+  # Required by Pillow
+  libjpeg-dev \
+  zlib1g-dev \
+  && ./install-ly2video.sh
+
+# Final image
+FROM lilypond${suffix} AS final
+
+LABEL maintainer="alexis.jeandeau@gmail.com"
+
+# Cleanup
+RUN rm -rf /install /var/lib/apt/lists/*
 
 WORKDIR /app
-
-RUN rm -rf /install /var/lib/apt/lists/*
 
 CMD ["lilypond", "-v"]
