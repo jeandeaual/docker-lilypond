@@ -27,6 +27,11 @@ ADD "https://lilypond.org/download/binaries/linux-64/lilypond-${lilypond_version
 RUN chmod +x "lilypond-${lilypond_version}-1.linux-64.sh"
 RUN "./lilypond-${lilypond_version}-1.linux-64.sh" --batch --prefix /lilypond
 
+WORKDIR /app
+
+# Cleanup
+RUN rm -rf /install
+
 ENV PATH "/lilypond/bin:${PATH}"
 
 # Image with the fonts
@@ -47,16 +52,16 @@ RUN apt-get install -y --no-install-recommends \
   fonts-ipaexfont \
   fonts-hanazono \
   fonts-noto-core \
-  fonts-noto-cjk
-
-# Manual system font installation (not in the repositories)
-RUN ./install-system-fonts.sh
-
-# LilyPond font installation
-RUN ./install-lilypond-fonts.sh /lilypond/lilypond/usr/share/lilypond/current
-
-# Cleanup
-RUN fc-cache -fv && apt-get remove -y bzip2 wget xz-utils && apt-get autoremove -y
+  fonts-noto-cjk \
+  # Manual system font installation (not in the repositories)
+  && ./install-system-fonts.sh \
+  # LilyPond font installation
+  && ./install-lilypond-fonts.sh /lilypond/lilypond/usr/share/lilypond/current \
+  # Cleanup
+  && fc-cache -fv \
+  && apt-get remove -y bzip2 wget xz-utils \
+  && apt-get autoremove -y \
+  && apt-get clean -y
 
 # Image with ly2video
 FROM lilypond AS lilypond-ly2video
@@ -81,12 +86,12 @@ RUN apt-get install -y --no-install-recommends \
   libasound-dev \
   # Required by Pillow
   libjpeg-dev \
-  zlib1g-dev
-
-RUN ./install-ly2video.sh
-
-# Cleanup
-RUN apt-get remove -y build-essential python3-dev libasound-dev libjpeg-dev zlib1g-dev && apt-get autoremove -y
+  zlib1g-dev \
+  && ./install-ly2video.sh \
+  # Cleanup
+  && apt-get remove -y build-essential python3-dev libasound-dev libjpeg-dev zlib1g-dev \
+  && apt-get autoremove -y \
+  && apt-get clean -y
 
 # Image with both the fonts and ly2video
 FROM lilypond-fonts AS lilypond-fonts-ly2video
@@ -107,12 +112,11 @@ RUN apt-get install -y --no-install-recommends \
   libasound-dev \
   # Required by Pillow
   libjpeg-dev \
-  zlib1g-dev
-
-RUN ./install-ly2video.sh
-
-# Cleanup
-RUN apt-get remove -y build-essential python3-dev libasound-dev libjpeg-dev zlib1g-dev && apt-get autoremove -y
+  zlib1g-dev \
+  && ./install-ly2video.sh \
+  && apt-get remove -y build-essential python3-dev libasound-dev libjpeg-dev zlib1g-dev \
+  && apt-get autoremove -y \
+  && apt-get clean -y
 
 # Final image
 FROM lilypond${suffix} AS final
@@ -120,8 +124,6 @@ FROM lilypond${suffix} AS final
 LABEL maintainer="alexis.jeandeau@gmail.com"
 
 # Cleanup
-RUN rm -rf /install /var/lib/apt/lists/*
-
-WORKDIR /app
+RUN rm -rf /var/lib/apt/lists/*
 
 CMD ["lilypond", "-v"]
