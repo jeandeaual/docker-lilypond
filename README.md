@@ -36,13 +36,13 @@ All tags are available with the following variants:
 
     Includes [ly2video](https://github.com/aspiers/ly2video).
 
-    This requires Python and makes the image quite larger, so I made it a separate tag.
+    This requires Python and makes the image quite larger.
 
 * `-fonts`
 
     Includes various open-sources fonts (mainly from [OpenLilyFonts](https://github.com/OpenLilyPondFonts)).
 
-    For usage, see <https://lilypond.org/doc/stable/Documentation/notation/replacing-the-notation-font> and <https://lilypond.org/doc/stable/Documentation/notation/fonts.html>
+    For usage, see <https://lilypond.org/doc/stable/Documentation/notation/replacing-the-notation-font> and <https://lilypond.org/doc/stable/Documentation/notation/fonts.html>.
 
     * LilyPond fonts:
 
@@ -70,27 +70,27 @@ All tags are available with the following variants:
 
 ### Command-line Examples
 
-Build a file using LilyPond 2.22.0:
+Build a file using LilyPond 2.23.0:
 
 ```sh
-docker run -v $(pwd):/app -w /app jeandeaual/lilypond:2.22.0 lilypond -dno-point-and-click main.ly
+docker run -v $(pwd):/app -w /app jeandeaual/lilypond:2.23.0 lilypond -dno-point-and-click main.ly
 ```
 
 Run ly2video on your LilyPond file (with the latest stable LilyPond version):
 
 ```sh
-docker run -v $(pwd):/app -w /app jeandeaual/lilypond:stable-ly2video ly2video main.ly
+docker run -v $(pwd):/app -w /app jeandeaual/lilypond:stable-ly2video ly2video -i main.ly
 ```
 
 Run [convert-ly](https://lilypond.org/doc/stable/Documentation/usage/invoking-convert_002dly) from the latest development version on all the LilyPond files in the current directory:
 
-```shell
+```sh
 docker run -v $(pwd):/app -w /app jeandeaual/lilypond:devel convert-ly -e *.ly
 ```
 
 ### GitHub Actions
 
-```yml
+```yaml
 name: build
 on:
   push:
@@ -121,7 +121,7 @@ jobs:
 
 ### GitLab CI
 
-```yml
+```yaml
 image: jeandeaual/lilypond:stable
 
 stages:
