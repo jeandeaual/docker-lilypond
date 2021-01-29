@@ -19,10 +19,18 @@ if [[ $# -gt 1 && ("$1" == "-h" || "$1" == "--help") ]]; then
     exit 0
 fi
 
-# ly2video installation
-git clone https://github.com/aspiers/ly2video.git
+readonly tmp_folder=$(mktemp -d)
+function cleanup {
+    rm -rf "${tmp_folder}"
+}
+trap cleanup EXIT
 
-cd ly2video
+(
+    # ly2video installation
+    git clone https://github.com/aspiers/ly2video.git "${tmp_folder}/ly2video"
 
-pip3 install -r requirements.txt
-pip3 install .
+    cd "${tmpfolder}/ly2video"
+
+    pip3 install -r requirements.txt
+    pip3 install .
+)
