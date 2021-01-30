@@ -12,10 +12,6 @@ In order to run this container you'll need [Docker](https://docs.docker.com/get-
 
 * `stable` (latest [stable version](https://lilypond.org/download.html))
     * `2.22.0`
-    * `2.20.0`
-    * `2.18.2`
-    * `2.18.1`
-    * `2.18.0`
 * `devel` (latest [development version](https://lilypond.org/development.html))
     * `2.23.0`
     * `2.21.82`
