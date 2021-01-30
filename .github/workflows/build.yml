@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - name: Login to DockerHub
@@ -53,6 +55,7 @@ jobs:
             jeandeaual/lilypond:${{ github.event.inputs.version }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
+          platforms: linux/amd64,linux/arm64
       - name: Image digest (latest)
         if: github.event.inputs.latest == 'true'
         run: echo ${{ steps.docker_build_latest.outputs.digest }}
@@ -69,6 +72,7 @@ jobs:
             jeandeaual/lilypond:${{ github.event.inputs.version }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
+          platforms: linux/amd64,linux/arm64
       - name: Image digest
         if: github.event.inputs.latest != 'true'
         run: echo ${{ steps.docker_build.outputs.digest }}
@@ -85,6 +89,7 @@ jobs:
             jeandeaual/lilypond:${{ github.event.inputs.version }}-fonts
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
+          platforms: linux/amd64,linux/arm64
       - name: Image digest (fonts)
         run: echo ${{ steps.docker_build_fonts.outputs.digest }}
       - name: Build and push (ly2video)
@@ -100,6 +105,7 @@ jobs:
             jeandeaual/lilypond:${{ github.event.inputs.version }}-ly2video
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
+          platforms: linux/amd64,linux/arm64
       - name: Image digest (ly2video)
         run: echo ${{ steps.docker_build_ly2video.outputs.digest }}
       - name: Build and push (fonts & ly2video)
@@ -115,5 +121,6 @@ jobs:
             jeandeaual/lilypond:${{ github.event.inputs.version }}-fonts-ly2video
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
+          platforms: linux/amd64,linux/arm64
       - name: Image digest (fonts & ly2video)
         run: echo ${{ steps.docker_build_ly2video.outputs.digest }}
