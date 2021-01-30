@@ -104,6 +104,8 @@ RUN apt-get install -y --no-install-recommends \
   # Required by ly2video
   ffmpeg \
   timidity \
+  fluid-soundfont-gm \
+  fluid-soundfont-gs \
   build-essential \
   python3-pip \
   python3-pil \
