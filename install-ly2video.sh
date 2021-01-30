@@ -29,7 +29,7 @@ trap cleanup EXIT
     # ly2video installation
     git clone https://github.com/aspiers/ly2video.git "${tmp_folder}/ly2video"
 
-    cd "${tmpfolder}/ly2video"
+    cd "${tmp_folder}/ly2video"
 
     pip3 install -r requirements.txt
     pip3 install .
