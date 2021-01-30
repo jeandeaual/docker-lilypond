@@ -64,6 +64,8 @@ RUN source /etc/default/locale \
     fontconfig \
     fonts-dejavu \
     ghostscript \
+    # LilyPond optional dependencies
+    extractpdfmark \
     # To transform PDFs (e.g. rotate)
     qpdf
 
