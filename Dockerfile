@@ -23,7 +23,6 @@ RUN source /etc/default/locale \
     git \
     guile-2.2-dev \
     install-info \
-    python3 \
     python-is-python3
 
 WORKDIR /build
@@ -64,6 +63,8 @@ RUN source /etc/default/locale \
     fontconfig \
     fonts-dejavu \
     ghostscript \
+    # For convert-ly
+    python-is-python3 \
     # LilyPond optional dependencies
     extractpdfmark \
     # To transform PDFs (e.g. rotate)
