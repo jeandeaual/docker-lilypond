@@ -84,6 +84,12 @@ Run [convert-ly](https://lilypond.org/doc/stable/Documentation/usage/invoking-co
 docker run -v $(pwd):/app -w /app jeandeaual/lilypond:devel convert-ly -e *.ly
 ```
 
+Run [extractpdfmark](https://github.com/trueroad/extractpdfmark) to reduce the PDF file size:
+
+```sh
+docker run -v $(pwd):/app -w /app jeandeaual/lilypond:devel extractpdfmark main.pdf > /tmp/tmp.ps && gs -q -dBATCH -dNOPAUSE -sDEVICE=pdfwrite -dPDFDontUseFontObjectNum -dPrinted=false -sOutputFile=main-extracted.pdf main.pdf /tmp/tmp.ps
+```
+
 ### GitHub Actions
 
 ```yaml
