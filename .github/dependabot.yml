@@ -1,7 +1,14 @@
 version: 2
 updates:
-  # Maintain dependencies for GitHub Actions
+  # Configuration for Dockerfile
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    # Disable all pull requests for Docker dependencies
+    open-pull-requests-limit: 0
+  # Configuration for GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "monthly"
