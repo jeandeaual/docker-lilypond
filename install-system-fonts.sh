@@ -42,7 +42,7 @@ function cleanup {
 trap cleanup EXIT
 
 # Libertinus
-readonly libertinus_version="7.031"
+readonly libertinus_version="7.040"
 readonly libertinus_archive="Libertinus-${libertinus_version}.tar.xz"
 readonly wget_options="--no-check-certificate"
 
