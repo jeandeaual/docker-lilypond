@@ -35,7 +35,8 @@ if [[ ! -w "${font_folder}" ]]; then
     exit 1
 fi
 
-readonly tmp_folder=$(mktemp -d)
+tmp_folder=$(mktemp -d)
+readonly tmp_folder
 function cleanup {
     rm -rf "${tmp_folder}"
 }

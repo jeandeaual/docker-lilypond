@@ -1,0 +1,4 @@
+ignored:
+  # Not following:
+  # https://github.com/koalaman/shellcheck/wiki/SC1091
+  - SC1091

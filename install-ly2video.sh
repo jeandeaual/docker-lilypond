@@ -19,7 +19,8 @@ if [[ $# -gt 1 && ("$1" == "-h" || "$1" == "--help") ]]; then
     exit 0
 fi
 
-readonly tmp_folder=$(mktemp -d)
+tmp_folder=$(mktemp -d)
+readonly tmp_folder
 function cleanup {
     rm -rf "${tmp_folder}"
 }

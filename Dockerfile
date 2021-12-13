@@ -2,16 +2,28 @@
 # See https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
 ARG suffix=""
 ARG lilypond_version="2.22.0"
+ARG username=lilypond
+ARG user_uid=1000
+ARG user_gid=$user_uid
+
+
 
 FROM debian:bullseye-slim AS build
 
-SHELL ["/bin/bash", "-c"]
+USER root
 
-RUN printf 'LANG="C"\nLANGUAGE="C"\nLC_ALL="C"\n' > /etc/default/locale
+ARG username
+ARG user_uid
+ARG user_gid
 
-RUN echo "deb-src http://deb.debian.org/debian bullseye main" >> /etc/apt/sources.list
+# Add application (non-root) user and group
+RUN groupadd --gid "${user_gid}" "${username}" \
+    && useradd --uid "${user_uid}" --gid "${user_gid}" -m "${username}"
 
-RUN source /etc/default/locale \
+# hadolint ignore=DL3008
+RUN printf 'LANG="C"\nLANGUAGE="C"\nLC_ALL="C"\n' > /etc/default/locale \
+  && source /etc/default/locale \
+  && echo "deb-src http://deb.debian.org/debian bullseye main" >> /etc/apt/sources.list \
   && apt-get update \
   # Install the LilyPond build dependencies
   && apt-get build-dep -y lilypond \
@@ -30,28 +42,33 @@ WORKDIR /build
 ARG lilypond_version
 
 # Install LilyPond
-RUN git clone --no-tags --single-branch --depth 1 --branch "release/${lilypond_version}-1" https://git.savannah.gnu.org/git/lilypond.git
+RUN git clone --no-tags --single-branch --branch "release/${lilypond_version}-1" https://git.savannah.gnu.org/git/lilypond.git
 
 WORKDIR /build/lilypond
 
 RUN ./autogen.sh --noconfigure \
   # Update the configure script (required to build on arm64)
-  && cp /usr/share/misc/config.{sub,guess} ./config/ \
+  && cp /usr/share/misc/config.sub /usr/share/misc/config.guess ./config/ \
   && mkdir build
 
 WORKDIR /build/lilypond/build
 
 RUN mkdir /lilypond \
   && ../configure --prefix /lilypond --disable-debugging --disable-documentation \
-  && make -j$(cat /sys/fs/cgroup/cpuset/cpuset.cpus | cut -d- -f 2) \
+  && make -j"$(cut -d- -f 2 /sys/fs/cgroup/cpuset/cpuset.cpus)" \
   && make install
+
+USER ${username}
+
+
 
 FROM debian:bullseye-slim AS lilypond
 
-SHELL ["/bin/bash", "-c"]
+USER root
 
 RUN printf 'LANG="C"\nLANGUAGE="C"\nLC_ALL="C"\n' > /etc/default/locale
 
+# hadolint ignore=DL3008,DL3009
 RUN source /etc/default/locale \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
@@ -74,16 +91,23 @@ COPY --from=build /lilypond /lilypond
 
 ENV PATH "/lilypond/bin:${PATH}"
 
+ARG username
+
+USER ${username}
+
+
+
 # Image with the fonts
 FROM lilypond AS lilypond-fonts
 
-SHELL ["/bin/bash", "-c"]
+USER root
 
-COPY install-lilypond-fonts.sh install-system-fonts.sh ./
+COPY install-lilypond-fonts.sh install-system-fonts.sh /tmp/
 
 ARG lilypond_version
 
 # Install fonts for LilyPond
+# hadolint ignore=DL3008
 RUN apt-get install -y --no-install-recommends \
   fontconfig \
   # Required by install-lilypond-fonts.sh and install-system-fonts.sh
@@ -96,19 +120,27 @@ RUN apt-get install -y --no-install-recommends \
   fonts-noto-core \
   fonts-noto-cjk \
   # Manual system font installation (not in the repositories)
-  && ./install-system-fonts.sh \
+  && /tmp/install-system-fonts.sh \
   # LilyPond font installation
-  && ./install-lilypond-fonts.sh "/lilypond/share/lilypond/${lilypond_version}" \
+  && /tmp/install-lilypond-fonts.sh "/lilypond/share/lilypond/${lilypond_version}" \
+  && rm /tmp/install-system-fonts.sh /tmp/install-lilypond-fonts.sh \
   && fc-cache -fv
+
+ARG username
+
+USER ${username}
+
+
 
 # Image with ly2video
 FROM lilypond AS lilypond-ly2video
 
-SHELL ["/bin/bash", "-c"]
+USER root
 
-COPY install-ly2video.sh ./
+COPY install-ly2video.sh /tmp/
 
 # Install ly2video
+# hadolint ignore=DL3008
 RUN apt-get install -y --no-install-recommends \
   git \
   # Required by ly2video
@@ -125,14 +157,24 @@ RUN apt-get install -y --no-install-recommends \
   # Required by Pillow
   libjpeg-dev \
   zlib1g-dev \
-  && ./install-ly2video.sh
+  && /tmp/install-ly2video.sh \
+  && rm /tmp/install-ly2video.sh
+
+ARG username
+
+USER ${username}
+
+
 
 # Image with both the fonts and ly2video
 FROM lilypond-fonts AS lilypond-fonts-ly2video
 
-COPY install-ly2video.sh ./
+USER root
+
+COPY install-ly2video.sh /tmp/
 
 # Install ly2video
+# hadolint ignore=DL3008
 RUN apt-get install -y --no-install-recommends \
   git \
   # Required by ly2video
@@ -149,12 +191,22 @@ RUN apt-get install -y --no-install-recommends \
   # Required by Pillow
   libjpeg-dev \
   zlib1g-dev \
-  && ./install-ly2video.sh
+  && /tmp/install-ly2video.sh \
+  && rm /tmp/install-ly2video.sh
+
+ARG username
+
+USER ${username}
+
+
 
 # Final image
+# hadolint ignore=DL3006
 FROM lilypond${suffix} AS final
 
 LABEL maintainer="alexis.jeandeau@gmail.com"
+
+USER root
 
 # Cleanup
 RUN apt-get remove -y bzip2 wget xz-utils build-essential python3-dev libasound-dev libjpeg-dev zlib1g-dev \
@@ -163,5 +215,13 @@ RUN apt-get remove -y bzip2 wget xz-utils build-essential python3-dev libasound-
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
+
+ARG username
+ARG user_uid
+ARG user_gid
+
+RUN chown -R "${user_uid}:${user_gid}" /app
+
+USER ${username}
 
 CMD ["lilypond", "-v"]
