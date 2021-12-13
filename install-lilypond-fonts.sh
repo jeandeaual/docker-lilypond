@@ -121,7 +121,8 @@ done
 
 # Gonville
 # See https://lilypond.org/doc/stable/Documentation/notation/replacing-the-notation-font
-readonly tmp_folder=$(mktemp -d)
+tmp_folder=$(mktemp -d)
+readonly tmp_folder
 function cleanup {
     rm -rf "${tmp_folder}"
 }

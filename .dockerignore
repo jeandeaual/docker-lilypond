@@ -1,4 +1,5 @@
 .git*
+.hadolint.yml
 *.md
 LICENSE
 build*.sh
