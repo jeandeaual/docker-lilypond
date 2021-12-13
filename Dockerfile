@@ -20,7 +20,6 @@ ARG user_gid
 RUN groupadd --gid "${user_gid}" "${username}" \
     && useradd --uid "${user_uid}" --gid "${user_gid}" -m "${username}"
 
-# hadolint ignore=DL3008
 RUN printf 'LANG="C"\nLANGUAGE="C"\nLC_ALL="C"\n' > /etc/default/locale \
   && source /etc/default/locale \
   && echo "deb-src http://deb.debian.org/debian bullseye main" >> /etc/apt/sources.list \
@@ -28,14 +27,14 @@ RUN printf 'LANG="C"\nLANGUAGE="C"\nLC_ALL="C"\n' > /etc/default/locale \
   # Install the LilyPond build dependencies
   && apt-get build-dep -y lilypond \
   && apt-get install -y --no-install-recommends \
-    ca-certificates \
+    ca-certificates=20210119 \
     # To get newer config.sub and config.guess
-    autotools-dev \
+    autotools-dev=20180224.1+nmu1 \
     # LilyPond build dependencies
-    git \
-    guile-2.2-dev \
-    install-info \
-    python-is-python3
+    git=1:2.30.2-1 \
+    guile-2.2-dev=2.2.7+1-6 \
+    install-info=6.7.0.dfsg.2-6 \
+    python-is-python3=3.9.2-1
 
 WORKDIR /build
 
@@ -68,24 +67,24 @@ USER root
 
 RUN printf 'LANG="C"\nLANGUAGE="C"\nLC_ALL="C"\n' > /etc/default/locale
 
-# hadolint ignore=DL3008,DL3009
+# hadolint ignore=DL3009
 RUN source /etc/default/locale \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
-    ca-certificates \
+    ca-certificates=20210119 \
     # LilyPond run dependencies
-    libglib2.0-0 \
-    guile-2.2 \
-    libpangoft2-1.0-0 \
-    fontconfig \
-    fonts-dejavu \
-    ghostscript \
+    libglib2.0-0=2.66.8-1 \
+    guile-2.2=2.2.7+1-6 \
+    libpangoft2-1.0-0=1.46.2-3 \
+    fontconfig=2.13.1-4.2 \
+    fonts-dejavu=2.37-2 \
+    ghostscript=9.53.3~dfsg-7+deb11u1 \
     # For convert-ly
-    python-is-python3 \
+    python-is-python3=3.9.2-1 \
     # LilyPond optional dependencies
-    extractpdfmark \
+    extractpdfmark=1.1.0-1.1 \
     # To transform PDFs (e.g. rotate)
-    qpdf
+    qpdf=10.1.0-1
 
 COPY --from=build /lilypond /lilypond
 
@@ -107,18 +106,17 @@ COPY install-lilypond-fonts.sh install-system-fonts.sh /tmp/
 ARG lilypond_version
 
 # Install fonts for LilyPond
-# hadolint ignore=DL3008
 RUN apt-get install -y --no-install-recommends \
-  fontconfig \
+  fontconfig=2.13.1-4.2 \
   # Required by install-lilypond-fonts.sh and install-system-fonts.sh
-  wget \
-  xz-utils \
+  wget=1.21-1+b1 \
+  xz-utils=5.2.5-2 \
   # System font installation through the repositories
-  fonts-ipafont \
-  fonts-ipaexfont \
-  fonts-hanazono \
-  fonts-noto-core \
-  fonts-noto-cjk \
+  fonts-ipafont=00303-21 \
+  fonts-ipaexfont=00401-3 \
+  fonts-hanazono=20170904-2.1 \
+  fonts-noto-core=20201225-1 \
+  fonts-noto-cjk=1:20201206-cjk+repack1-1 \
   # Manual system font installation (not in the repositories)
   && /tmp/install-system-fonts.sh \
   # LilyPond font installation
@@ -140,23 +138,22 @@ USER root
 COPY install-ly2video.sh /tmp/
 
 # Install ly2video
-# hadolint ignore=DL3008
 RUN apt-get install -y --no-install-recommends \
-  git \
+  git=1:2.30.2-1 \
   # Required by ly2video
-  ffmpeg \
-  timidity \
-  fluid-soundfont-gm \
-  fluid-soundfont-gs \
-  build-essential \
-  python3-pip \
-  python3-pil \
-  python3-dev \
-  swig \
-  libasound-dev \
+  ffmpeg=7:4.3.2-0+deb11u2 \
+  timidity=2.14.0-8 \
+  fluid-soundfont-gm=3.1-5.2 \
+  fluid-soundfont-gs=3.1-5.2 \
+  build-essential=12.9 \
+  python3-pip=20.3.4-4 \
+  python3-pil=8.1.2+dfsg-0.3 \
+  python3-dev=3.9.2-3 \
+  swig=4.0.2-1 \
+  libasound2-dev=1.2.4-1.1 \
   # Required by Pillow
-  libjpeg-dev \
-  zlib1g-dev \
+  libjpeg-dev=1:2.0.6-4 \
+  zlib1g-dev=1:1.2.11.dfsg-2 \
   && /tmp/install-ly2video.sh \
   && rm /tmp/install-ly2video.sh
 
@@ -174,23 +171,22 @@ USER root
 COPY install-ly2video.sh /tmp/
 
 # Install ly2video
-# hadolint ignore=DL3008
 RUN apt-get install -y --no-install-recommends \
-  git \
+  git=1:2.30.2-1 \
   # Required by ly2video
-  ffmpeg \
-  timidity \
-  fluid-soundfont-gm \
-  fluid-soundfont-gs \
-  build-essential \
-  python3-pip \
-  python3-pil \
-  python3-dev \
-  swig \
-  libasound-dev \
+  ffmpeg=7:4.3.2-0+deb11u2 \
+  timidity=2.14.0-8 \
+  fluid-soundfont-gm=3.1-5.2 \
+  fluid-soundfont-gs=3.1-5.2 \
+  build-essential=12.9 \
+  python3-pip=20.3.4-4 \
+  python3-pil=8.1.2+dfsg-0.3 \
+  python3-dev=3.9.2-3 \
+  swig=4.0.2-1 \
+  libasound2-dev=1.2.4-1.1 \
   # Required by Pillow
-  libjpeg-dev \
-  zlib1g-dev \
+  libjpeg-dev=1:2.0.6-4 \
+  zlib1g-dev=1:1.2.11.dfsg-2 \
   && /tmp/install-ly2video.sh \
   && rm /tmp/install-ly2video.sh
 
