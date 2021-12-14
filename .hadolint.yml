@@ -1,4 +1,7 @@
 ignored:
+  # Pin versions in apt-get install
+  # https://github.com/hadolint/hadolint/wiki/DL3008
+  - DL3008
   # Not following:
   # https://github.com/koalaman/shellcheck/wiki/SC1091
   - SC1091

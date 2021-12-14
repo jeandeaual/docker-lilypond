@@ -10,17 +10,6 @@ ARG user_gid=$user_uid
 
 FROM debian:bullseye-slim AS build
 
-USER root
-
-ARG username
-ARG user_uid
-ARG user_gid
-
-# Add application (non-root) user and group
-RUN groupadd --gid "${user_gid}" "${username}" \
-    && useradd --uid "${user_uid}" --gid "${user_gid}" -m "${username}"
-
-# hadolint ignore=DL3008
 RUN printf 'LANG="C"\nLANGUAGE="C"\nLC_ALL="C"\n' > /etc/default/locale \
   && . /etc/default/locale \
   && echo "deb-src http://deb.debian.org/debian bullseye main" >> /etc/apt/sources.list \
@@ -58,15 +47,11 @@ RUN mkdir /lilypond \
   && make -j"$(cut -d- -f 2 /sys/fs/cgroup/cpuset/cpuset.cpus)" \
   && make install
 
-USER ${username}
-
 
 
 FROM debian:bullseye-slim AS lilypond
 
-USER root
-
-# hadolint ignore=DL3008,DL3009
+# hadolint ignore=DL3009
 RUN printf 'LANG="C"\nLANGUAGE="C"\nLC_ALL="C"\n' > /etc/default/locale \
   && . /etc/default/locale \
   && apt-get update \
@@ -90,23 +75,16 @@ COPY --from=build /lilypond /lilypond
 
 ENV PATH "/lilypond/bin:${PATH}"
 
-ARG username
-
-USER ${username}
-
 
 
 # Image with the fonts
 FROM lilypond AS lilypond-fonts
-
-USER root
 
 COPY install-lilypond-fonts.sh install-system-fonts.sh /tmp/
 
 ARG lilypond_version
 
 # Install fonts for LilyPond
-# hadolint ignore=DL3008
 RUN apt-get install -y --no-install-recommends \
   fontconfig \
   # Required by install-lilypond-fonts.sh and install-system-fonts.sh
@@ -125,21 +103,14 @@ RUN apt-get install -y --no-install-recommends \
   && rm /tmp/install-system-fonts.sh /tmp/install-lilypond-fonts.sh \
   && fc-cache -fv
 
-ARG username
-
-USER ${username}
-
 
 
 # Image with ly2video
 FROM lilypond AS lilypond-ly2video
 
-USER root
-
 COPY install-ly2video.sh /tmp/
 
 # Install ly2video
-# hadolint ignore=DL3008
 RUN apt-get install -y --no-install-recommends \
   git \
   # Required by ly2video
@@ -158,22 +129,15 @@ RUN apt-get install -y --no-install-recommends \
   zlib1g-dev \
   && /tmp/install-ly2video.sh \
   && rm /tmp/install-ly2video.sh
-
-ARG username
-
-USER ${username}
 
 
 
 # Image with both the fonts and ly2video
 FROM lilypond-fonts AS lilypond-fonts-ly2video
 
-USER root
-
 COPY install-ly2video.sh /tmp/
 
 # Install ly2video
-# hadolint ignore=DL3008
 RUN apt-get install -y --no-install-recommends \
   git \
   # Required by ly2video
@@ -192,10 +156,6 @@ RUN apt-get install -y --no-install-recommends \
   zlib1g-dev \
   && /tmp/install-ly2video.sh \
   && rm /tmp/install-ly2video.sh
-
-ARG username
-
-USER ${username}
 
 
 
@@ -204,8 +164,6 @@ USER ${username}
 FROM lilypond${suffix} AS final
 
 LABEL maintainer="alexis.jeandeau@gmail.com"
-
-USER root
 
 # Cleanup
 RUN apt-get remove -y bzip2 wget xz-utils build-essential python3-dev libasound-dev libjpeg-dev zlib1g-dev \
@@ -219,7 +177,10 @@ ARG username
 ARG user_uid
 ARG user_gid
 
-RUN chown -R "${user_uid}:${user_gid}" /app
+# Add application (non-root) user and group
+RUN groupadd --gid "${user_gid}" "${username}" \
+    && useradd --uid "${user_uid}" --gid "${user_gid}" -m "${username}" \
+    && chown -R "${user_uid}:${user_gid}" /app
 
 USER ${username}
 
