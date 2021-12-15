@@ -9,7 +9,6 @@ for cmd in git pip3; do
     }
 done
 
-
 usage () {
     echo "Usage: $(basename "$0")"
 }

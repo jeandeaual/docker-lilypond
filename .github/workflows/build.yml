@@ -42,7 +42,7 @@ jobs:
         with:
           push: true
           build-args: |
-            lilypond_version=${{ github.event.inputs.version }}
+            LILYPOND_VERSION=${{ github.event.inputs.version }}
           tags: |
             jeandeaual/lilypond:latest
             jeandeaual/lilypond:${{ github.event.inputs.tag }}
@@ -60,7 +60,7 @@ jobs:
         with:
           push: true
           build-args: |
-            lilypond_version=${{ github.event.inputs.version }}
+            LILYPOND_VERSION=${{ github.event.inputs.version }}
           tags: |
             jeandeaual/lilypond:${{ github.event.inputs.tag }}
             jeandeaual/lilypond:${{ github.event.inputs.version }}
@@ -76,8 +76,8 @@ jobs:
         with:
           push: true
           build-args: |
-            lilypond_version=${{ github.event.inputs.version }}
-            suffix=-fonts
+            LILYPOND_VERSION=${{ github.event.inputs.version }}
+            SUFFIX=-fonts
           tags: |
             jeandeaual/lilypond:${{ github.event.inputs.tag }}-fonts
             jeandeaual/lilypond:${{ github.event.inputs.version }}-fonts
@@ -92,8 +92,8 @@ jobs:
         with:
           push: true
           build-args: |
-            lilypond_version=${{ github.event.inputs.version }}
-            suffix=-ly2video
+            LILYPOND_VERSION=${{ github.event.inputs.version }}
+            SUFFIX=-ly2video
           tags: |
             jeandeaual/lilypond:${{ github.event.inputs.tag}}-ly2video
             jeandeaual/lilypond:${{ github.event.inputs.version }}-ly2video
@@ -108,8 +108,8 @@ jobs:
         with:
           push: true
           build-args: |
-            lilypond_version=${{ github.event.inputs.version }}
-            suffix=-fonts-ly2video
+            LILYPOND_VERSION=${{ github.event.inputs.version }}
+            SUFFIX=-fonts-ly2video
           tags: |
             jeandeaual/lilypond:${{ github.event.inputs.tag}}-fonts-ly2video
             jeandeaual/lilypond:${{ github.event.inputs.version }}-fonts-ly2video

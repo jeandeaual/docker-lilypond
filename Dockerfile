@@ -1,10 +1,10 @@
 # ARGs used in FROM need to be declared before the first FROM
 # See https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
-ARG suffix=""
-ARG lilypond_version="2.22.0"
-ARG username=lilypond
-ARG user_uid=1000
-ARG user_gid=$user_uid
+ARG SUFFIX=""
+ARG LILYPOND_VERSION="2.22.0"
+ARG USERNAME=lilypond
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
 
 
 
@@ -28,10 +28,10 @@ RUN printf 'LANG="C"\nLANGUAGE="C"\nLC_ALL="C"\n' > /etc/default/locale \
 
 WORKDIR /build
 
-ARG lilypond_version
+ARG LILYPOND_VERSION
 
 # Install LilyPond
-RUN git clone --no-tags --single-branch --branch "release/${lilypond_version}-1" https://git.savannah.gnu.org/git/lilypond.git
+RUN git clone --no-tags --single-branch --branch "release/${LILYPOND_VERSION}-1" https://git.savannah.gnu.org/git/lilypond.git
 
 WORKDIR /build/lilypond
 
@@ -82,7 +82,7 @@ FROM lilypond AS lilypond-fonts
 
 COPY install-lilypond-fonts.sh install-system-fonts.sh /tmp/
 
-ARG lilypond_version
+ARG LILYPOND_VERSION
 
 # Install fonts for LilyPond
 RUN apt-get install -y --no-install-recommends \
@@ -99,7 +99,7 @@ RUN apt-get install -y --no-install-recommends \
   # Manual system font installation (not in the repositories)
   && /tmp/install-system-fonts.sh \
   # LilyPond font installation
-  && /tmp/install-lilypond-fonts.sh "/lilypond/share/lilypond/${lilypond_version}" \
+  && /tmp/install-lilypond-fonts.sh "/lilypond/share/lilypond/${LILYPOND_VERSION}" \
   && rm /tmp/install-system-fonts.sh /tmp/install-lilypond-fonts.sh \
   && fc-cache -fv
 
@@ -112,21 +112,21 @@ COPY install-ly2video.sh /tmp/
 
 # Install ly2video
 RUN apt-get install -y --no-install-recommends \
-  git \
-  # Required by ly2video
-  ffmpeg \
-  timidity \
-  fluid-soundfont-gm \
-  fluid-soundfont-gs \
-  build-essential \
-  python3-pip \
-  python3-pil \
-  python3-dev \
-  swig \
-  libasound-dev \
-  # Required by Pillow
-  libjpeg-dev \
-  zlib1g-dev \
+    git \
+    # Required by ly2video
+    ffmpeg \
+    timidity \
+    fluid-soundfont-gm \
+    fluid-soundfont-gs \
+    build-essential \
+    python3-pip \
+    python3-pil \
+    python3-dev \
+    swig \
+    libasound-dev \
+    # Required by Pillow
+    libjpeg-dev \
+    zlib1g-dev \
   && /tmp/install-ly2video.sh \
   && rm /tmp/install-ly2video.sh
 
@@ -139,21 +139,21 @@ COPY install-ly2video.sh /tmp/
 
 # Install ly2video
 RUN apt-get install -y --no-install-recommends \
-  git \
-  # Required by ly2video
-  ffmpeg \
-  timidity \
-  fluid-soundfont-gm \
-  fluid-soundfont-gs \
-  build-essential \
-  python3-pip \
-  python3-pil \
-  python3-dev \
-  swig \
-  libasound-dev \
-  # Required by Pillow
-  libjpeg-dev \
-  zlib1g-dev \
+    git \
+    # Required by ly2video
+    ffmpeg \
+    timidity \
+    fluid-soundfont-gm \
+    fluid-soundfont-gs \
+    build-essential \
+    python3-pip \
+    python3-pil \
+    python3-dev \
+    swig \
+    libasound-dev \
+    # Required by Pillow
+    libjpeg-dev \
+    zlib1g-dev \
   && /tmp/install-ly2video.sh \
   && rm /tmp/install-ly2video.sh
 
@@ -161,7 +161,7 @@ RUN apt-get install -y --no-install-recommends \
 
 # Final image
 # hadolint ignore=DL3006
-FROM lilypond${suffix} AS final
+FROM lilypond${SUFFIX} AS final
 
 LABEL maintainer="alexis.jeandeau@gmail.com"
 
@@ -173,15 +173,15 @@ RUN apt-get remove -y bzip2 wget xz-utils build-essential python3-dev libasound-
 
 WORKDIR /app
 
-ARG username
-ARG user_uid
-ARG user_gid
+ARG USERNAME
+ARG USER_UID
+ARG USER_GID
 
 # Add application (non-root) user and group
-RUN groupadd --gid "${user_gid}" "${username}" \
-    && useradd --uid "${user_uid}" --gid "${user_gid}" -m "${username}" \
-    && chown -R "${user_uid}:${user_gid}" /app
+RUN groupadd --gid "${USER_GID}" "${USERNAME}" \
+    && useradd --uid "${USER_UID}" --gid "${USER_GID}" -m "${USERNAME}" \
+    && chown -R "${USER_UID}:${USER_GID}" /app
 
-USER ${username}
+USER $USERNAME
 
 CMD ["lilypond", "-v"]
