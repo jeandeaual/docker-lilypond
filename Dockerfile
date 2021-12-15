@@ -44,7 +44,7 @@ WORKDIR /build/lilypond/build
 
 RUN mkdir /lilypond \
   && ../configure --prefix /lilypond --disable-debugging --disable-documentation \
-  && make -j"$(cut -d- -f 2 /sys/fs/cgroup/cpuset/cpuset.cpus)" \
+  && make -j"$(nproc)" \
   && make install
 
 
