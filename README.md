@@ -33,9 +33,9 @@ In order to run this container you'll need [Docker](https://docs.docker.com/get-
 
 All tags are available with the following variants:
 
-* `-ly2video`
+* `-tools`
 
-    Includes [ly2video](https://github.com/aspiers/ly2video).
+    Includes [ly2video](https://github.com/aspiers/ly2video) and [the Spontini editor](https://github.com/paopre/Spontini).
 
     This requires Python and makes the image quite larger.
 
@@ -74,26 +74,36 @@ All tags are available with the following variants:
 Build a file using LilyPond 2.23.0:
 
 ```sh
-docker run -v $(pwd):/app -w /app jeandeaual/lilypond:2.23.0 lilypond -dno-point-and-click main.ly
+docker run -v $(pwd):/app jeandeaual/lilypond:2.23.0 lilypond -dno-point-and-click main.ly
 ```
 
-Run ly2video on your LilyPond file (with the latest stable LilyPond version):
+Run [ly2video](https://github.com/aspiers/ly2video) on your LilyPond file (with the latest stable LilyPond version):
 
 ```sh
-docker run -v $(pwd):/app -w /app jeandeaual/lilypond:stable-ly2video ly2video -i main.ly
+docker run -v $(pwd):/app jeandeaual/lilypond:stable-tools ly2video -i main.ly
 ```
 
 Run [convert-ly](https://lilypond.org/doc/stable/Documentation/usage/invoking-convert_002dly) from the latest development version on all the LilyPond files in the current directory:
 
 ```sh
-docker run -v $(pwd):/app -w /app jeandeaual/lilypond:devel convert-ly -e *.ly
+docker run -v $(pwd):/app jeandeaual/lilypond:devel convert-ly -e *.ly
 ```
 
 Run [extractpdfmark](https://github.com/trueroad/extractpdfmark) to reduce the PDF file size:
 
 ```sh
-docker run -v $(pwd):/app -w /app jeandeaual/lilypond:devel extractpdfmark main.pdf > /tmp/tmp.ps && gs -q -dBATCH -dNOPAUSE -sDEVICE=pdfwrite -dPDFDontUseFontObjectNum -dPrinted=false -sOutputFile=main-extracted.pdf main.pdf /tmp/tmp.ps
+docker run -v $(pwd):/app jeandeaual/lilypond:devel extractpdfmark main.pdf > /tmp/tmp.ps && gs -q -dBATCH -dNOPAUSE -sDEVICE=pdfwrite -dPDFDontUseFontObjectNum -dPrinted=false -sOutputFile=main-extracted.pdf main.pdf /tmp/tmp.ps
 ```
+
+Run [Spontini](https://github.com/paopre/Spontini) with the latest development version of LilyPond:
+
+* Run the server:
+
+  ```sh
+  docker run -it -p 8000:8000 jeandeaual/lilypond:devel-tools spontini
+  ```
+
+* Open <http://localhost:8000/spontini-editor> in your browser
 
 ### GitHub Actions
 

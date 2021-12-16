@@ -105,12 +105,43 @@ RUN apt-get install -y --no-install-recommends \
 
 
 
-# Image with ly2video
-FROM lilypond AS lilypond-ly2video
+# Image with ly2video and Spontini
+FROM lilypond AS lilypond-tools
 
-COPY install-ly2video.sh /tmp/
+COPY install-ly2video.sh install-spontini.sh /tmp/
 
-# Install ly2video
+# Install ly2video and Spontini
+RUN apt-get install -y --no-install-recommends \
+    git \
+    wget \
+    # Required by ly2video
+    ffmpeg \
+    timidity \
+    fluid-soundfont-gm \
+    fluid-soundfont-gs \
+    build-essential \
+    python3-pip \
+    python3-pil \
+    python3-dev \
+    swig \
+    libasound-dev \
+    # Required by Pillow
+    libjpeg-dev \
+    zlib1g-dev \
+    # Required by Spontini
+    python3-venv \
+  && /tmp/install-ly2video.sh \
+  && /tmp/install-spontini.sh \
+  && rm /tmp/install-ly2video.sh /tmp/install-spontini.sh
+
+
+
+# Image with both the fonts and tools (ly2video and Spontini)
+FROM lilypond-fonts AS lilypond-fonts-tools
+
+COPY install-ly2video.sh install-spontini.sh /tmp/
+
+# Install ly2video and Spontini
 RUN apt-get install -y --no-install-recommends \
     git \
     # Required by ly2video
@@ -127,35 +158,11 @@ RUN apt-get install -y --no-install-recommends \
     # Required by Pillow
     libjpeg-dev \
     zlib1g-dev \
+    # Required by Spontini
+    python3-venv \
   && /tmp/install-ly2video.sh \
-  && rm /tmp/install-ly2video.sh
-
-
-
-# Image with both the fonts and ly2video
-FROM lilypond-fonts AS lilypond-fonts-ly2video
-
-COPY install-ly2video.sh /tmp/
-
-# Install ly2video
-RUN apt-get install -y --no-install-recommends \
-    git \
-    # Required by ly2video
-    ffmpeg \
-    timidity \
-    fluid-soundfont-gm \
-    fluid-soundfont-gs \
-    build-essential \
-    python3-pip \
-    python3-pil \
-    python3-dev \
-    swig \
-    libasound-dev \
-    # Required by Pillow
-    libjpeg-dev \
-    zlib1g-dev \
-  && /tmp/install-ly2video.sh \
-  && rm /tmp/install-ly2video.sh
+  && /tmp/install-spontini.sh \
+  && rm /tmp/install-ly2video.sh /tmp/install-spontini.sh
 
 
 
@@ -180,7 +187,8 @@ ARG USER_GID
 # Add application (non-root) user and group
 RUN groupadd --gid "${USER_GID}" "${USERNAME}" \
     && useradd --uid "${USER_UID}" --gid "${USER_GID}" -m "${USERNAME}" \
-    && chown -R "${USER_UID}:${USER_GID}" /app
+    && chown -R "${USER_UID}:${USER_GID}" /app \
+    && if [ -d /opt/Spontini ]; then chown -R "${USER_UID}:${USER_GID}" /opt/Spontini; fi
 
 USER $USERNAME
 

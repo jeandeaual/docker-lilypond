@@ -81,35 +81,35 @@ jobs:
           platforms: linux/amd64,linux/arm64
       - name: Image digest (fonts)
         run: echo ${{ steps.docker_build_fonts.outputs.digest }}
-      - name: Build (ly2video)
-        id: docker_build_ly2video
+      - name: Build (tools)
+        id: docker_build_tools
         uses: docker/build-push-action@v2
         with:
           push: false
           build-args: |
             LILYPOND_VERSION=${{ github.event.inputs.version }}
-            SUFFIX=-ly2video
+            SUFFIX=-tools
           tags: |
-            jeandeaual/lilypond:${{ github.event.inputs.tag}}-ly2video
-            jeandeaual/lilypond:${{ github.event.inputs.version }}-ly2video
+            jeandeaual/lilypond:${{ github.event.inputs.tag}}-tools
+            jeandeaual/lilypond:${{ github.event.inputs.version }}-tools
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           platforms: linux/amd64,linux/arm64
-      - name: Image digest (ly2video)
-        run: echo ${{ steps.docker_build_ly2video.outputs.digest }}
-      - name: Build (fonts & ly2video)
-        id: docker_build_fonts_ly2video
+      - name: Image digest (tools)
+        run: echo ${{ steps.docker_build_tools.outputs.digest }}
+      - name: Build (fonts & tools)
+        id: docker_build_fonts_tools
         uses: docker/build-push-action@v2
         with:
           push: false
           build-args: |
             LILYPOND_VERSION=${{ github.event.inputs.version }}
-            SUFFIX=-fonts-ly2video
+            SUFFIX=-fonts-tools
           tags: |
-            jeandeaual/lilypond:${{ github.event.inputs.tag}}-fonts-ly2video
-            jeandeaual/lilypond:${{ github.event.inputs.version }}-fonts-ly2video
+            jeandeaual/lilypond:${{ github.event.inputs.tag}}-fonts-tools
+            jeandeaual/lilypond:${{ github.event.inputs.version }}-fonts-tools
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           platforms: linux/amd64,linux/arm64
-      - name: Image digest (fonts & ly2video)
-        run: echo ${{ steps.docker_build_ly2video.outputs.digest }}
+      - name: Image digest (fonts & tools)
+        run: echo ${{ steps.docker_build_tools.outputs.digest }}
