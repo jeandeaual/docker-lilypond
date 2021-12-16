@@ -9,10 +9,6 @@ on:
         description: 'Image tag ("stable" or "devel")'
         required: true
         default: 'devel'
-      latest:
-        description: 'Latest'
-        required: true
-        default: 'true'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -30,28 +26,9 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-
-      - name: Build (latest)
-        id: docker_build_latest
-        uses: docker/build-push-action@v2
-        if: github.event.inputs.latest == 'true'
-        with:
-          push: false
-          build-args: |
-            LILYPOND_VERSION=${{ github.event.inputs.version }}
-          tags: |
-            jeandeaual/lilypond:latest
-            jeandeaual/lilypond:${{ github.event.inputs.tag }}
-            jeandeaual/lilypond:${{ github.event.inputs.version }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
-          platforms: linux/amd64,linux/arm64
-      - name: Image digest (latest)
-        if: github.event.inputs.latest == 'true'
-        run: echo ${{ steps.docker_build_latest.outputs.digest }}
       - name: Build
         id: docker_build
         uses: docker/build-push-action@v2
-        if: github.event.inputs.latest != 'true'
         with:
           push: false
           build-args: |
@@ -63,7 +40,6 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache
           platforms: linux/amd64,linux/arm64
       - name: Image digest
-        if: github.event.inputs.latest != 'true'
         run: echo ${{ steps.docker_build.outputs.digest }}
       - name: Build (fonts)
         id: docker_build_fonts
