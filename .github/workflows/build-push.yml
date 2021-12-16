@@ -1,4 +1,4 @@
-name: Build the images
+name: Build and push the images to DockerHub
 on:
   workflow_dispatch:
     inputs:
@@ -14,7 +14,7 @@ on:
         required: true
         default: 'true'
 jobs:
-  build:
+  build-push:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
@@ -23,6 +23,11 @@ jobs:
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Cache Docker layers
         uses: actions/cache@v2
         with:
@@ -30,12 +35,12 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-
-      - name: Build (latest)
+      - name: Build and push (latest)
         id: docker_build_latest
         uses: docker/build-push-action@v2
         if: github.event.inputs.latest == 'true'
         with:
-          push: false
+          push: true
           build-args: |
             LILYPOND_VERSION=${{ github.event.inputs.version }}
           tags: |
@@ -48,12 +53,12 @@ jobs:
       - name: Image digest (latest)
         if: github.event.inputs.latest == 'true'
         run: echo ${{ steps.docker_build_latest.outputs.digest }}
-      - name: Build
+      - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
         if: github.event.inputs.latest != 'true'
         with:
-          push: false
+          push: true
           build-args: |
             LILYPOND_VERSION=${{ github.event.inputs.version }}
           tags: |
@@ -65,11 +70,11 @@ jobs:
       - name: Image digest
         if: github.event.inputs.latest != 'true'
         run: echo ${{ steps.docker_build.outputs.digest }}
-      - name: Build (fonts)
+      - name: Build and push (fonts)
         id: docker_build_fonts
         uses: docker/build-push-action@v2
         with:
-          push: false
+          push: true
           build-args: |
             LILYPOND_VERSION=${{ github.event.inputs.version }}
             SUFFIX=-fonts
@@ -81,11 +86,11 @@ jobs:
           platforms: linux/amd64,linux/arm64
       - name: Image digest (fonts)
         run: echo ${{ steps.docker_build_fonts.outputs.digest }}
-      - name: Build (ly2video)
+      - name: Build and push (ly2video)
         id: docker_build_ly2video
         uses: docker/build-push-action@v2
         with:
-          push: false
+          push: true
           build-args: |
             LILYPOND_VERSION=${{ github.event.inputs.version }}
             SUFFIX=-ly2video
@@ -97,11 +102,11 @@ jobs:
           platforms: linux/amd64,linux/arm64
       - name: Image digest (ly2video)
         run: echo ${{ steps.docker_build_ly2video.outputs.digest }}
-      - name: Build (fonts & ly2video)
+      - name: Build and push (fonts & ly2video)
         id: docker_build_fonts_ly2video
         uses: docker/build-push-action@v2
         with:
-          push: false
+          push: true
           build-args: |
             LILYPOND_VERSION=${{ github.event.inputs.version }}
             SUFFIX=-fonts-ly2video
