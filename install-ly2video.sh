@@ -31,6 +31,9 @@ trap cleanup EXIT
 
     cd "${tmp_folder}/ly2video"
 
+    # Fix "The unauthenticated git protocol on port 9418 is no longer supported."
+    sed -i 's/^git+git/git+https/' requirements.txt
+
     pip3 install -r requirements.txt
     pip3 install .
 )
