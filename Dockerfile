@@ -31,7 +31,9 @@ WORKDIR /build
 ARG LILYPOND_VERSION
 
 # Install LilyPond
-RUN git clone --no-tags --single-branch --branch "release/${LILYPOND_VERSION}-1" https://git.savannah.gnu.org/git/lilypond.git
+RUN git clone --no-tags --single-branch --branch "v${LILYPOND_VERSION}" https://git.savannah.gnu.org/git/lilypond.git \
+  # Old tag format
+  || git clone --no-tags --single-branch --branch "release/${LILYPOND_VERSION}-1" https://git.savannah.gnu.org/git/lilypond.git
 
 WORKDIR /build/lilypond
 
