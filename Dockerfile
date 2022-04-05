@@ -10,6 +10,8 @@ ARG USER_GID=$USER_UID
 
 FROM debian:bullseye-slim AS build
 
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 RUN printf 'LANG="C"\nLANGUAGE="C"\nLC_ALL="C"\n' > /etc/default/locale \
   && . /etc/default/locale \
   && echo "deb-src http://deb.debian.org/debian bullseye main" >> /etc/apt/sources.list \
@@ -20,7 +22,7 @@ RUN printf 'LANG="C"\nLANGUAGE="C"\nLC_ALL="C"\n' > /etc/default/locale \
     ca-certificates \
     # To get newer config.sub and config.guess
     autotools-dev \
-    # LilyPond build dependencies
+    # Additional LilyPond build dependencies
     git \
     guile-2.2-dev \
     install-info \
@@ -44,8 +46,16 @@ RUN ./autogen.sh --noconfigure \
 
 WORKDIR /build/lilypond/build
 
-RUN mkdir /lilypond \
-  && ../configure --prefix /lilypond --disable-debugging --disable-documentation \
+RUN if [[ "2.23.4" = "$(echo -e "2.23.4\n${LILYPOND_VERSION}" | sort -V | head -n1)" ]]; then \
+  # Enable the experimental Cairo backend if the version is >= 2.23.4
+  export additional_flags="--enable-cairo-backend"; else \
+  export additional_flags=""; fi \
+  && mkdir /lilypond \
+  && ../configure \
+  --prefix /lilypond \
+  --disable-debugging \
+  --disable-documentation \
+  "${additional_flags}" \
   && make -j"$(nproc)" \
   && make install
 
@@ -65,7 +75,10 @@ RUN printf 'LANG="C"\nLANGUAGE="C"\nLC_ALL="C"\n' > /etc/default/locale \
     libpangoft2-1.0-0 \
     fontconfig \
     fonts-dejavu \
+    # Remove if / when Ghostscript gets replaced by Cairo
     ghostscript \
+    # Required when building with --enable-cairo-backend
+    libcairo2 \
     # For convert-ly
     python-is-python3 \
     # LilyPond optional dependencies
