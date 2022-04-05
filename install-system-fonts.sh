@@ -42,13 +42,24 @@ function cleanup {
 }
 trap cleanup EXIT
 
+readonly wget_options="--no-check-certificate"
+
 # Libertinus
 readonly libertinus_version="7.040"
 readonly libertinus_archive="Libertinus-${libertinus_version}.tar.xz"
-readonly wget_options="--no-check-certificate"
 
 wget "https://github.com/alerque/libertinus/releases/download/v${libertinus_version}/${libertinus_archive}" \
     -O "${tmp_folder}/${libertinus_archive}" \
     "${wget_options}"
 tar -xvJf "${tmp_folder}/${libertinus_archive}" -C "${tmp_folder}/"
-mv -v "${tmp_folder}/Libertinus-${libertinus_version}"/static/OTF/*.otf "${font_folder}/"
+mv -v "${tmp_folder}/${libertinus_archive%.tar.xz}"/static/OTF/*.otf "${font_folder}/"
+
+# 原ノ味フォント / Harano Aji fonts
+readonly haranoaji_version="20220220"
+readonly haranoaji_archive="HaranoAjiFonts-${haranoaji_version}.tar.gz"
+
+wget "https://github.com/trueroad/HaranoAjiFonts/archive/refs/tags/${haranoaji_version}.tar.gz" \
+    -O "${tmp_folder}/${haranoaji_archive}" \
+    "${wget_options}"
+tar -xvzf "${tmp_folder}/${haranoaji_archive}" -C "${tmp_folder}/"
+mv -v "${tmp_folder}/${haranoaji_archive%.tar.gz}"/*.otf "${font_folder}/"
