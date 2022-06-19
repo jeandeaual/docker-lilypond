@@ -39,9 +39,9 @@ jobs:
           build-args: |
             LILYPOND_VERSION=${{ github.event.inputs.version }}
           tags: |
-            jeandeaual/lilypond:latest
-            jeandeaual/lilypond:${{ github.event.inputs.tag }}
-            jeandeaual/lilypond:${{ github.event.inputs.version }}
+            ${{ github.repository_owner }}/lilypond:latest
+            ${{ github.repository_owner }}/lilypond:${{ github.event.inputs.tag }}
+            ${{ github.repository_owner }}/lilypond:${{ github.event.inputs.version }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           platforms: linux/amd64,linux/arm64
@@ -57,8 +57,8 @@ jobs:
           build-args: |
             LILYPOND_VERSION=${{ github.event.inputs.version }}
           tags: |
-            jeandeaual/lilypond:${{ github.event.inputs.tag }}
-            jeandeaual/lilypond:${{ github.event.inputs.version }}
+            ${{ github.repository_owner }}/lilypond:${{ github.event.inputs.tag }}
+            ${{ github.repository_owner }}/lilypond:${{ github.event.inputs.version }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           platforms: linux/amd64,linux/arm64
@@ -74,8 +74,8 @@ jobs:
             LILYPOND_VERSION=${{ github.event.inputs.version }}
             SUFFIX=-fonts
           tags: |
-            jeandeaual/lilypond:${{ github.event.inputs.tag }}-fonts
-            jeandeaual/lilypond:${{ github.event.inputs.version }}-fonts
+            ${{ github.repository_owner }}/lilypond:${{ github.event.inputs.tag }}-fonts
+            ${{ github.repository_owner }}/lilypond:${{ github.event.inputs.version }}-fonts
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           platforms: linux/amd64,linux/arm64
@@ -90,8 +90,8 @@ jobs:
             LILYPOND_VERSION=${{ github.event.inputs.version }}
             SUFFIX=-ly2video
           tags: |
-            jeandeaual/lilypond:${{ github.event.inputs.tag}}-ly2video
-            jeandeaual/lilypond:${{ github.event.inputs.version }}-ly2video
+            ${{ github.repository_owner }}/lilypond:${{ github.event.inputs.tag}}-ly2video
+            ${{ github.repository_owner }}/lilypond:${{ github.event.inputs.version }}-ly2video
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           platforms: linux/amd64,linux/arm64
@@ -106,8 +106,8 @@ jobs:
             LILYPOND_VERSION=${{ github.event.inputs.version }}
             SUFFIX=-fonts-ly2video
           tags: |
-            jeandeaual/lilypond:${{ github.event.inputs.tag}}-fonts-ly2video
-            jeandeaual/lilypond:${{ github.event.inputs.version }}-fonts-ly2video
+            ${{ github.repository_owner }}/lilypond:${{ github.event.inputs.tag}}-fonts-ly2video
+            ${{ github.repository_owner }}/lilypond:${{ github.event.inputs.version }}-fonts-ly2video
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           platforms: linux/amd64,linux/arm64
