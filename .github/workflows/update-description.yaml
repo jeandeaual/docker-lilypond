@@ -4,7 +4,7 @@ on:
     branches:
       - master
     paths:
-      - .github/workflows/update-description.yml
+      - .github/workflows/update-description.yaml
       - README.md
 jobs:
   update-description:

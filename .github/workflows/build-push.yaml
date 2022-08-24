@@ -1,18 +1,18 @@
-name: Build and push the images to DockerHub
+name: Build and push the images
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'LilyPond version'
+        description: LilyPond version
         required: true
       tag:
-        description: 'Image tag ("stable" or "devel")'
+        description: Image tag ("stable" or "devel")
         required: true
-        default: 'devel'
+        default: devel
       latest:
-        description: 'Latest'
+        description: Latest
         required: true
-        default: 'true'
+        default: "true"
 jobs:
   build-push:
     runs-on: ubuntu-latest
