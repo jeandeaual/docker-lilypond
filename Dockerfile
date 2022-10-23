@@ -56,7 +56,7 @@ RUN if [[ "2.23.4" = "$(echo -e "2.23.4\n${LILYPOND_VERSION}" | sort -V | head -
   --disable-debugging \
   --disable-documentation \
   "${additional_flags}" \
-  && make -j"$(nproc)" \
+  && make -j"$(($(nproc)+1))" \
   && make install
 
 
