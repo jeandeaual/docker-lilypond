@@ -46,18 +46,25 @@ RUN ./autogen.sh --noconfigure \
 
 WORKDIR /build/lilypond/build
 
-RUN if [[ "2.23.4" = "$(echo -e "2.23.4\n${LILYPOND_VERSION}" | sort -V | head -n1)" ]]; then \
+RUN export additional_config_flags=() \
+  && export make_targets=(all) \
+  && export make_install_targets=() \
+  && if [[ "2.23.4" = "$(echo -e "2.23.4\n${LILYPOND_VERSION}" | sort -V | head -n1)" ]]; then \
   # Enable the experimental Cairo backend if the version is >= 2.23.4
-  export additional_flags="--enable-cairo-backend"; else \
-  export additional_flags=""; fi \
+  additional_config_flags=("${additional_config_flags[@]}" --enable-cairo-backend); fi \
+  && if [[ "2.23.7" = "$(echo -e "2.23.7\n${LILYPOND_VERSION}" | sort -V | head -n1)" ]]; then \
+  # Improve the performance of the Scheme code evaluator in Guile 2.2 if the version is >= 2.23.7
+  # https://lilypond.org/doc/v2.23/Documentation/changes/index.html
+  make_targets=("${make_targets[@]}" bytecode); \
+  make_install_targets=("${make_install_targets[@]}" install-bytecode); fi \
   && mkdir /lilypond \
   && ../configure \
   --prefix /lilypond \
   --disable-debugging \
   --disable-documentation \
-  "${additional_flags}" \
-  && make -j"$(($(nproc)+1))" \
-  && make install
+  "${additional_config_flags[@]}" \
+  && make -j"$(($(nproc)+1))" "${make_targets[@]}" \
+  && make install "${make_install_targets[@]}"
 
 
 
