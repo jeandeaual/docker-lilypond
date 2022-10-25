@@ -82,6 +82,8 @@ RUN printf 'LANG="C"\nLANGUAGE="C"\nLC_ALL="C"\n' > /etc/default/locale \
     libpangoft2-1.0-0 \
     fontconfig \
     fonts-dejavu \
+    # Not installed by LilyPond anymore since 2.23.80
+    fonts-urw-base35 \
     # Remove if / when Ghostscript gets replaced by Cairo
     ghostscript \
     # Required when building with --enable-cairo-backend
@@ -118,6 +120,8 @@ RUN apt-get install -y --no-install-recommends \
   fonts-hanazono \
   fonts-noto-core \
   fonts-noto-cjk \
+  # Not installed by LilyPond anymore since 2.23.80
+  fonts-texgyre \
   # Manual system font installation (not in the repositories)
   && /tmp/install-system-fonts.sh \
   # LilyPond font installation
