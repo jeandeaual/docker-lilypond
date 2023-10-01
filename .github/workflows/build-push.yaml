@@ -43,7 +43,7 @@ jobs:
             ${{ runner.os }}-buildx-
       - name: Build and push (latest)
         id: docker_build_latest
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         if: github.event.inputs.latest == 'true'
         with:
           push: true
@@ -64,7 +64,7 @@ jobs:
         run: echo ${{ steps.docker_build_latest.outputs.digest }}
       - name: Build and push
         id: docker_build
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         if: github.event.inputs.latest != 'true'
         with:
           push: true
@@ -83,7 +83,7 @@ jobs:
         run: echo ${{ steps.docker_build.outputs.digest }}
       - name: Build and push (fonts)
         id: docker_build_fonts
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           push: true
           build-args: |
@@ -101,7 +101,7 @@ jobs:
         run: echo ${{ steps.docker_build_fonts.outputs.digest }}
       - name: Build and push (ly2video)
         id: docker_build_ly2video
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           push: true
           build-args: |
@@ -119,7 +119,7 @@ jobs:
         run: echo ${{ steps.docker_build_ly2video.outputs.digest }}
       - name: Build and push (fonts & ly2video)
         id: docker_build_fonts_ly2video
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           push: true
           build-args: |
