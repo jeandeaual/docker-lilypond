@@ -11,12 +11,24 @@ In order to run this container you'll need [Docker](https://docs.docker.com/get-
 ## Supported Tags
 
 * `stable` (latest [stable version](https://lilypond.org/download.html))
+    * `2.24.3`
+    * `2.24.2`
     * `2.24.1`
     * `2.24.0`
     * `2.22.2`
     * `2.22.1`
     * `2.22.0`
 * `devel` (latest [development version](https://lilypond.org/development.html))
+    * `2.25.12`
+    * `2.25.11`
+    * `2.25.10`
+    * `2.25.9`
+    * `2.25.8`
+    * `2.25.7`
+    * `2.25.6`
+    * `2.25.5`
+    * `2.25.4`
+    * `2.25.3`
     * `2.25.2`
     * `2.25.1`
     * `2.25.0`
